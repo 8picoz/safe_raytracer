@@ -25,15 +25,15 @@ public:
         canvas = new float[canvasArraySize];
     }
 
-    std::tuple<int, int> getSize() {
+    std::tuple<int, int> get_size() {
         return std::make_tuple(width, height);
     }
 
     void set_pixel(int x, int y, vec3f& rgb) {
         auto index = 3 * x + 3 * width * y;
-        canvas[index] = rgb.getX();
-        canvas[index + 1] = rgb.getY();
-        canvas[index + 2] = rgb.getZ();
+        canvas[index] = rgb.get_x();
+        canvas[index + 1] = rgb.get_y();
+        canvas[index + 2] = rgb.get_z();
     }
 
     void write_ppm(const std::string& filename) const {

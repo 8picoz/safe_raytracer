@@ -17,15 +17,15 @@ public:
         z = _z;
     }
 
-    T getX() {
+    T get_x() {
         return x;
     }
 
-    T getY() {
+    T get_y() {
         return y;
     }
 
-    T getZ() {
+    T get_z() {
         return z;
     }
 
@@ -62,7 +62,7 @@ public:
         return std::sqrt(dot(this));
     }
 
-    T sqrMagnitude() {
+    T sqr_magnitude() {
         return dot(this);
     }
 

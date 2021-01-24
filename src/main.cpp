@@ -46,14 +46,18 @@ void write_image_test() {
   img.write_ppm("output.ppm");
 }
 
-int main() {
-  
+void tests() {
   assert_eq(vec3_and_scalar_multi_test());
   assert_eq(vec3_hadamard_test());
   assert_eq(vec3_add_test());
   assert_eq(vec3_sub_test());
 
-  writeImage();
+  write_image_test();
+}
+
+int main() {
+  
+  tests();
 
   return 0;
 }
