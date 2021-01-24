@@ -17,48 +17,48 @@ public:
         z = _z;
     }
 
-    T get_x() {
+    T get_x() const {
         return x;
     }
 
-    T get_y() {
+    T get_y() const {
         return y;
     }
 
-    T get_z() {
+    T get_z() const {
         return z;
     }
 
-    vec3 operator * (T target) {
+    vec3 operator * (T target) const {
         return vec3(x * target, y * target, z * target);
     }
 
-    vec3 operator * (vec3 target) {
+    vec3 operator * (vec3 target) const {
         return vec3(x * target.x, y * target.y, z * target.z);
     }
 
-    vec3 operator + (vec3 target) {
+    vec3 operator + (vec3 target) const {
         return vec3(x + target.x, y + target.y, z + target.z);
     }
 
-    vec3 operator - (vec3 target) {
+    vec3 operator - (vec3 target) const {
         return vec3(x - target.x, y - target.y, z - target.z);
     }
 
-    T dot(vec3 target) {
+    T dot(vec3 target) const {
         return ((x * target.x) +
                 (y * target.y) +
                 (z * target.z));
     }
 
-    vec3 cross(vec3 target) {
+    vec3 cross(vec3 target) const {
         return vec3(y * target.z - z * target.y,
                     z * target.x - x * target.z,
                     x * target.y - y * target.x
                     );
     }
 
-    double magnitude() {
+    double magnitude() const {
         return std::sqrt(dot(this));
     }
 
@@ -66,11 +66,11 @@ public:
         return dot(this);
     }
 
-    vec3 normalized() {
+    vec3 normalized() const {
         return (1 / sqrMagnitude) * this;
     }
 
-    bool eqValue(vec3 target) {
+    bool eqValue(vec3 target) const {
         return (x == target.x) &&
                (y == target.y) && 
                (z == target.z);

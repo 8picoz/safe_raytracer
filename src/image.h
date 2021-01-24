@@ -25,7 +25,7 @@ public:
         canvas = new float[canvasArraySize];
     }
 
-    std::tuple<int, int> get_size() {
+    std::tuple<int, int> get_size() const {
         return std::make_tuple(width, height);
     }
 
@@ -62,7 +62,7 @@ public:
         file.close();
     }
 
-    void gamma() {
+    void gamma_set() {
         for(int i = 0; i < canvasArraySize; i++) {
             canvas[i] = std::pow(canvas[i], 1 / 2.2f);
         }
