@@ -18,50 +18,50 @@ public:
     }
 
     vec3 operator * (T target) {
-        return vec3(this->x * target, this->y * target, this->z * target);
+        return vec3(x * target, y * target, z * target);
     }
 
     vec3 operator * (vec3 target) {
-        return vec3(this->x * target->x, this->y * target->y, this->z * target->z);
+        return vec3(x * target.x, y * target.y, z * target.z);
     }
 
     vec3 operator + (vec3 target) {
-        return vec3(this->x + target->x, this->y + target->y, this->z + target->z);
+        return vec3(x + target.x, y + target.y, z + target.z);
     }
 
     vec3 operator - (vec3 target) {
-        return vec3(this->x - target->x, this->y - target->y, this->z - target->z);
+        return vec3(x - target.x, y - target.y, z - target.z);
     }
 
     T dot(vec3 target) {
-        return ((this->x * target->x) +
-                (this->y * target->y) +
-                (this->z * target->z));
+        return ((x * target.x) +
+                (y * target.y) +
+                (z * target.z));
     }
 
     vec3 cross(vec3 target) {
-        return vec3(this->y * target->z - this->z * target->y,
-                    this->z * target->x - this->x * target->z,
-                    this->x * target->y - this->y * target->x
+        return vec3(y * target.z - z * target.y,
+                    z * target.x - x * target.z,
+                    x * target.y - y * target.x
                     );
     }
 
     double magnitude() {
-        return std::sqrt(this->dot(this));
+        return std::sqrt(dot(this));
     }
 
     T sqrMagnitude() {
-        return this->dot(this);
+        return dot(this);
     }
 
     vec3 normalized() {
-        return (1 / this->sqrMagnitude) * this;
+        return (1 / sqrMagnitude) * this;
     }
 
     bool eqValue(vec3 target) {
-        return (this->x == target->x) &&
-               (this->y == target->y) && 
-               (this->z == target->z);
+        return (x == target.x) &&
+               (y == target.y) && 
+               (z == target.z);
     }
 
     ~vec3() {
