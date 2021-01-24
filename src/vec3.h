@@ -10,11 +10,23 @@ protected:
     T z;
 
 public:
-    vec3::vec3(T _x, T _y, T _z)
+    vec3(T _x, T _y, T _z)
     {
         x = _x;
         y = _y;
         z = _z;
+    }
+
+    T getX() {
+        return x;
+    }
+
+    T getY() {
+        return y;
+    }
+
+    T getZ() {
+        return z;
     }
 
     vec3 operator * (T target) {
