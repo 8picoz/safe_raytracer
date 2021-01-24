@@ -49,17 +49,14 @@ public:
         file << "255" << std::endl;
         for (int j = 0; j < height; ++j) {
             for (int i = 0; i < width; ++i) {
-                const int idx = 3 * i + 3 * width * j;
-                float R = canvas[idx];
-                float G = canvas[idx + 1];
-                float B = canvas[idx + 2];
+                const int index = 3 * i + 3 * width * j;
+                float r = canvas[index];
+                float g = canvas[index + 1];
+                float b = canvas[index + 2];
 
-                file << static_cast<unsigned int>(std::clamp(255.0f * R, 0.0f, 255.0f))
-                    << " ";
-                file << static_cast<unsigned int>(std::clamp(255.0f * G, 0.0f, 255.0f))
-                    << " ";
-                file << static_cast<unsigned int>(std::clamp(255.0f * B, 0.0f, 255.0f))
-                    << std::endl;
+                file << static_cast<unsigned int>(std::clamp(255.0f * r, 0.0f, 255.0f)) << " ";
+                file << static_cast<unsigned int>(std::clamp(255.0f * g, 0.0f, 255.0f)) << " ";
+                file << static_cast<unsigned int>(std::clamp(255.0f * b, 0.0f, 255.0f)) << std::endl;
             }
         }
         file.close();

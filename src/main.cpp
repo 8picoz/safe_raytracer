@@ -36,13 +36,17 @@ bool vec3_sub_test() {
 
 void write_image_test() {
   image img(512, 512);
-  auto size = img.getSize();
+  auto canvas_size = img.get_size();
 
-  for(int j = 0; j < std::get<1>(size); ++j) {
-    for(int i = 0; i < std::get<0>(size); ++i) {
-      img.set_pixel(i, j, vec3f(static_cast<float>(i) / std::get<0>(size), static_cast<float>(j) / std::get<1>(size), 1.0f));
+  auto width = std::get<0>(canvas_size);
+  auto height = std::get<1>(canvas_size);
+
+  for(int j = 0; j < height; ++j) {
+    for(int i = 0; i < width; ++i) {
+      img.set_pixel(i, j, vec3f(static_cast<float>(i) / width, static_cast<float>(j) / height, 1.0f));
     }
   }
+  
   img.write_ppm("output.ppm");
 }
 
