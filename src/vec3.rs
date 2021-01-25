@@ -1,6 +1,7 @@
+use num::Float;
 use std::ops;
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Vec3<T>
 where
     T: Copy,
@@ -32,10 +33,25 @@ where
     pub fn sqr_magnitude(self) -> T {
         self.dot(self)
     }
+}
 
+impl<T> Vec3<T>
+where
+    T: ops::Add<Output = T> + ops::Mul<Output = T> + Copy + Float,
+{
     //[TODO] ノルム
     pub fn magnitude(self) -> T {
         self.dot(self).sqrt()
+    }
+
+    pub fn normalized(self) -> Self {
+        let magnitude = self.magnitude();
+
+        Self {
+            x: magnitude * self.x,
+            y: magnitude * self.y,
+            z: magnitude * self.z,
+        }
     }
 }
 
@@ -53,16 +69,6 @@ where
             y: self.z * rhs.x - self.x * rhs.z,
             z: self.x * rhs.y - self.y * rhs.x,
         }
-    }
-}
-
-//平等性
-impl<T> PartialEq for Vec3<T>
-where
-    T: PartialEq + Copy,
-{
-    fn eq(&self, rhs: &Self) -> bool {
-        self.x == rhs.x && self.y == rhs.y && self.z == rhs.z
     }
 }
 

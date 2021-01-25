@@ -10,6 +10,20 @@ mod vec3 {
     }
 
     #[test]
+    fn vec3_sqr_magnitude() {
+        let a = Vec3::new(2, 2, 2);
+
+        assert_eq!(a.sqr_magnitude(), 12);
+    }
+
+    #[test]
+    fn vec3_normalized() {
+        let a = Vec3::new(1.0, 0.0, 0.0);
+
+        assert_eq!(a.normalized(), Vec3::new(1.0, 0.0, 0.0))
+    }
+
+    #[test]
     fn vec3_cross() {
         let a = Vec3::new(1, 2, 3);
         let b = Vec3::new(4, 5, 6);
