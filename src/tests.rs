@@ -33,7 +33,6 @@ mod vec3 {
         assert_eq!(a - b, Vec3::new(-1, -1, -1));
     }
 
-
     #[test]
     fn vec3_sub_2() {
         let a = Vec3::new(1, 1, 1);
