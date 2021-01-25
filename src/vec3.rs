@@ -11,7 +11,7 @@ where
 }
 
 impl<T> Vec3<T>
-where 
+where
     T: Copy,
 {
     pub fn new(x: T, y: T, z: T) -> Self {
@@ -21,7 +21,7 @@ where
 
 impl<T> Vec3<T>
 where
-    T: ops::Add<Output = T> + ops::Mul<Output = T> + Copy + ,
+    T: ops::Add<Output = T> + ops::Mul<Output = T> + Copy,
 {
     //内積
     pub fn dot(self, rhs: Self) -> T {
@@ -39,12 +39,7 @@ where
     }
 }
 
-impl<T> Vec3<T>
-where
-    T: ops::Add<Output = T> + ops::Mul<Output = T> + Copy,
-{
-
-}
+impl<T> Vec3<T> where T: ops::Add<Output = T> + ops::Mul<Output = T> + Copy {}
 
 //外積
 impl<T> Vec3<T>
@@ -122,7 +117,6 @@ where
 //ニュータイプ
 pub struct MultiplableType<T: ops::Mul>(T);
 
-//[TODO]
 //スカラー倍 k * vec3
 impl<T> ops::Mul<Vec3<T>> for MultiplableType<T>
 where
@@ -134,7 +128,6 @@ where
         let Self(value) = self;
 
         Vec3 {
-            //なにかもっと良い方法はないのか？
             x: value * rhs.x,
             y: value * rhs.y,
             z: value * rhs.z,
