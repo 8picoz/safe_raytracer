@@ -11,12 +11,32 @@ where
     z: T,
 }
 
+//rgb
+impl Vec3<f32> {
+    //rgbとvecは別物なので型を分けたほうが良い気がする
+    pub fn new_rgb(x: f32, y: f32, z: f32) -> Self {
+        Vec3 { x, y, z }
+    }
+}
+
 impl<T> Vec3<T>
 where
     T: Copy,
 {
     pub fn new(x: T, y: T, z: T) -> Self {
         Vec3 { x, y, z }
+    }
+
+    pub fn get_x(self) -> T {
+        self.x
+    }
+
+    pub fn get_y(self) -> T {
+        self.y
+    }
+
+    pub fn get_z(self) -> T {
+        self.z
     }
 }
 
