@@ -65,16 +65,9 @@ where
     }
 
     pub fn normalized(self) -> Self {
-        let magnitude = self.magnitude();
-
-        Self {
-            x: self.x / magnitude,
-            y: self.y / magnitude,
-            z: self.z / magnitude,
-        }
+        self / self.magnitude()
     }
 }
-
 
 
 //外積
@@ -119,6 +112,22 @@ where
             x: self.x - rhs.x,
             y: self.y - rhs.y,
             z: self.z - rhs.z,
+        }
+    }
+}
+
+//除算 vec3 / k
+impl<T> ops::Div<T> for Vec3<T>
+where
+    T: ops::Div<Output = T> + Copy,
+{
+    type Output = Self;
+
+    fn div(self, rhs: T) -> Self {
+        Self {
+            x: self.x / rhs,
+            y: self.y / rhs,
+            z: self.z / rhs,
         }
     }
 }
