@@ -75,7 +75,7 @@ where
     }
 }
 
-impl<T> Vec3<T> where T: ops::Add<Output = T> + ops::Mul<Output = T> + Copy {}
+
 
 //外積
 impl<T> Vec3<T>
