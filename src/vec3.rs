@@ -68,9 +68,9 @@ where
         let magnitude = self.magnitude();
 
         Self {
-            x: magnitude * self.x,
-            y: magnitude * self.y,
-            z: magnitude * self.z,
+            x: self.x / magnitude,
+            y: self.y / magnitude,
+            z: self.z / magnitude,
         }
     }
 }
@@ -82,7 +82,6 @@ impl<T> Vec3<T>
 where
     T: ops::Sub<Output = T> + ops::Mul<Output = T> + Copy,
 {
-    //外積
     pub fn cross(self, rhs: Self) -> Self {
         Self {
             x: self.y * rhs.z - self.z * rhs.y,
