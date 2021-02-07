@@ -1,7 +1,7 @@
 use crate::vec3::*;
 
-const TMIN: f32 = 1e-3;
-const TMAX: f32 = 10000.0;
+pub const TMIN: f32 = 1e-3;
+pub const TMAX: f32 = 10000.0;
 
 pub struct Ray {
     pub origin: Vec3f,

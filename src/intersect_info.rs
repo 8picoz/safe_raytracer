@@ -1,7 +1,13 @@
 use crate::vec3::*;
 
 pub struct IntersectInfo {
-    pub distance: Vec3f,
+    pub distance: f32,
     pub point: Vec3f,
     pub normal: Vec3f,
+}
+
+impl IntersectInfo {
+    pub fn new(distance: f32, point: Vec3f, normal: Vec3f) -> Self {
+        IntersectInfo { distance, point, normal }
+    }
 }
