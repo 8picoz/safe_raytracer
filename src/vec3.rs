@@ -6,9 +6,9 @@ pub struct Vec3<T>
 where
     T: Copy,
 {
-    x: T,
-    y: T,
-    z: T,
+    pub x: T,
+    pub y: T,
+    pub z: T,
 }
 
 //rgb
@@ -25,18 +25,6 @@ where
 {
     pub fn new(x: T, y: T, z: T) -> Self {
         Vec3 { x, y, z }
-    }
-
-    pub fn get_x(self) -> T {
-        self.x
-    }
-
-    pub fn get_y(self) -> T {
-        self.y
-    }
-
-    pub fn get_z(self) -> T {
-        self.z
     }
 }
 

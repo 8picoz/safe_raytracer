@@ -33,9 +33,9 @@ impl Image {
     pub fn set_pixel(&mut self, x: usize, y: usize, rgb: Vec3<f32>) {
         let target_pixel_index = 3 * x + 3 * self.width * y;
 
-        self.canvas[target_pixel_index] = rgb.get_x();
-        self.canvas[target_pixel_index + 1] = rgb.get_y();
-        self.canvas[target_pixel_index + 2] = rgb.get_z();
+        self.canvas[target_pixel_index] = rgb.x;
+        self.canvas[target_pixel_index + 1] = rgb.x;
+        self.canvas[target_pixel_index + 2] = rgb.z;
     }
 
     pub fn write_ppm(&self, output_name: &str) -> io::Result<()> {
