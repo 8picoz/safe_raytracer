@@ -28,7 +28,7 @@ impl Scene {
             let D = num::pow(b, 2) - c;
 
             if D < 0.0 {
-                return None;
+                continue;
             }
 
             let mut ans = -b - D.sqrt();
@@ -36,7 +36,7 @@ impl Scene {
                 ans = -b + D.sqrt();
 
                 if ans < TMIN || TMAX < ans {
-                    return None;
+                    continue;
                 }
             }
 
@@ -48,9 +48,14 @@ impl Scene {
                 (hit_position - sphere.point).normalized(),
             );
 
+            
             infos.push(info);
         }
 
-        Some(infos.into_iter().max_by(|a, b| a.distance.partial_cmp(&b.distance).unwrap()).unwrap())
+        if infos.is_empty() {
+            return None;
+        }
+
+        Some(infos.into_iter().min_by(|a, b| a.distance.partial_cmp(&b.distance).expect("failed to compare")).expect("failed to pick max value"))
     }
 }
