@@ -69,7 +69,6 @@ where
     }
 }
 
-
 //外積
 impl<T> Vec3<T>
 where

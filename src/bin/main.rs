@@ -1,7 +1,6 @@
 use raytrace::image::*;
 use raytrace::vec3::*;
 
-
 fn main() {
     let mut image = Image::new(512, 512);
     let canvas_size = image.get_size();
