@@ -30,11 +30,11 @@ impl Image {
         (self.width, self.height)
     }
 
-    pub fn set_pixel(&mut self, x: usize, y: usize, rgb: Vec3<f32>) {
+    pub fn set_pixel(&mut self, x: usize, y: usize, rgb: Vec3f) {
         let target_pixel_index = 3 * x + 3 * self.width * y;
 
         self.canvas[target_pixel_index] = rgb.x;
-        self.canvas[target_pixel_index + 1] = rgb.x;
+        self.canvas[target_pixel_index + 1] = rgb.y;
         self.canvas[target_pixel_index + 2] = rgb.z;
     }
 
