@@ -7,10 +7,39 @@ use std::process::Output;
 use raytracer::image::*;
 use raytracer::pinhole_camera::*;
 use raytracer::vec3::*;
+use raytracer::sphere::*;
 
 fn main() {
     //image_test("output.ppm");
-    pinhole_camera_test("output.ppm");
+    //pinhole_camera_test("output.ppm");
+    sphere_test("output.ppm");
+}
+
+fn sphere_test(path: &str) {
+    let mut image = Image::new(512, 512);
+    let canvas_size = image.get_size();
+
+    let camera = PinholeCamera::new(Vec3::new(0.0, 0.0, 3.0), Vec3::new(0.0, 0.0, -1.0), 1.0);
+
+    let sphere = Sphere::new(Vec3::new(0.0, 0.0, 0.0), 1.0, SphereMaterial::Diffuce, Vec3::new(1.0, 1.0, 1.0));
+
+    for j in 0..canvas_size.1 {
+        for i in 0..canvas_size.0 {
+            let u = (2.0 * i as f32 - canvas_size.0 as f32) / canvas_size.0 as f32;
+            let v = (2.0 * j as f32 - canvas_size.1 as f32) / canvas_size.1 as f32;
+
+            let ray = camera.make_ray_to_pinhole(u, v);
+
+            if let Some(info) = sphere.collision_detect(ray) {
+                image.set_pixel(i, j, info.normal * 0.5 + Vec3::new(0.5, 0.5, 0.5));
+            } else {
+                image.set_pixel(i, j, Vec3::new(0.0, 0.0, 0.0));
+            }
+        }
+    }
+
+    image.write_ppm(path).expect("failed to write ppm");
+    ppm_to_png(path).expect("converting is failed ppm to png");
 }
 
 //(2.0f * i - width) / widthは(i - width / 2.0f) / widthでも問題ない？

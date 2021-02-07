@@ -1,6 +1,3 @@
-use num::pow;
-
-use crate::ray;
 use crate::vec3::*;
 use crate::ray::*;
 use crate::intersect_info::*;
@@ -32,9 +29,9 @@ impl Sphere {
             return None;
         }
         
-        let mut ans = -b + (num::pow(b, 2) - 4.0 * c).sqrt();
+        let mut ans = -b - D.sqrt();
         if ans < TMIN || TMAX < ans {
-            ans = -b - (num::pow(b, 2) - 4.0 * c).sqrt();
+            ans = -b + D.sqrt();
             
             if ans < TMIN || TMAX < ans {
                 return None;
