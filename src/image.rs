@@ -19,8 +19,8 @@ impl Image {
         let array_size = 3 * width * height;
 
         Image {
-            width: width,
-            height: height,
+            width,
+            height,
             canvas: vec![0.0; array_size as usize],
             canvas_array_size: array_size,
         }
