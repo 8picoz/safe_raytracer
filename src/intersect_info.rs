@@ -8,6 +8,10 @@ pub struct IntersectInfo {
 
 impl IntersectInfo {
     pub fn new(distance: f32, point: Vec3f, normal: Vec3f) -> Self {
-        IntersectInfo { distance, point, normal }
+        IntersectInfo {
+            distance,
+            point,
+            normal,
+        }
     }
 }

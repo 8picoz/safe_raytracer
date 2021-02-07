@@ -1,6 +1,6 @@
-use crate::vec3::*;
-use crate::ray::*;
 use crate::intersect_info::*;
+use crate::ray::*;
+use crate::vec3::*;
 
 pub struct Sphere {
     pub point: Vec3f,
@@ -28,11 +28,11 @@ impl Sphere {
         if D < 0.0 {
             return None;
         }
-        
+
         let mut ans = -b - D.sqrt();
         if ans < TMIN || TMAX < ans {
             ans = -b + D.sqrt();
-            
+
             if ans < TMIN || TMAX < ans {
                 return None;
             }
@@ -40,7 +40,11 @@ impl Sphere {
 
         let hit_position = ray.point_on_ray(ans);
 
-        Some(IntersectInfo::new(ans, hit_position, (hit_position - self.point).normalized()))
+        Some(IntersectInfo::new(
+            ans,
+            hit_position,
+            (hit_position - self.point).normalized(),
+        ))
     }
 }
 

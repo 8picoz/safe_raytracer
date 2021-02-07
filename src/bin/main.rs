@@ -6,8 +6,8 @@ use std::process::Output;
 
 use raytracer::image::*;
 use raytracer::pinhole_camera::*;
-use raytracer::vec3::*;
 use raytracer::sphere::*;
+use raytracer::vec3::*;
 
 fn main() {
     //image_test("output.ppm");
@@ -21,7 +21,12 @@ fn sphere_test(path: &str) {
 
     let camera = PinholeCamera::new(Vec3::new(0.0, 0.0, 3.0), Vec3::new(0.0, 0.0, -1.0), 1.0);
 
-    let sphere = Sphere::new(Vec3::new(0.0, 0.0, 0.0), 1.0, SphereMaterial::Diffuce, Vec3::new(1.0, 1.0, 1.0));
+    let sphere = Sphere::new(
+        Vec3::new(0.0, 0.0, 0.0),
+        1.0,
+        SphereMaterial::Diffuce,
+        Vec3::new(1.0, 1.0, 1.0),
+    );
 
     for j in 0..canvas_size.1 {
         for i in 0..canvas_size.0 {
