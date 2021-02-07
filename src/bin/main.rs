@@ -3,9 +3,8 @@ use std::io::Error;
 use std::process::Command;
 use std::process::Output;
 
-use env::current_exe;
-use raytrace::image::*;
-use raytrace::vec3::*;
+use raytracer::image::*;
+use raytracer::vec3::*;
 
 fn main() {
     image_test("output.ppm");
