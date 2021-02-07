@@ -6,6 +6,7 @@ struct Ray {
   Vec3f origin;                         // 始点
   Vec3f direction;                      // 方向
   static constexpr float tmin = 1e-3f;  // 許容最小交差距離
+  static constexpr float tmax = 10000;  // 許容最大交差距離
 
   Ray(const Vec3f& origin, const Vec3f& direction)
       : origin(origin), direction(direction) {}

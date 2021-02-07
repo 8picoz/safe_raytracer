@@ -17,6 +17,8 @@ struct Vec3 {
 
   T operator[](unsigned int i) const { return v[i]; }
   T& operator[](unsigned int i) { return v[i]; }
+
+  Vec3 operator-() const { return Vec3(-v[0], -v[1], -v[2]); }
 };
 
 // ベクトル同士の加算
@@ -99,6 +101,15 @@ inline float length(const Vec3<T>& v) {
     sum += v[i] * v[i];
   }
   return std::sqrt(sum);
+}
+
+template <typename T>
+inline float length2(const Vec3<T>& v) {
+  float sum = 0;
+  for (int i = 0; i < 3; ++i) {
+    sum += v[i] * v[i];
+  }
+  return sum;
 }
 
 // 正規化
