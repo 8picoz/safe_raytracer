@@ -1,7 +1,9 @@
+use std::env;
 use std::io::Error;
 use std::process::Command;
 use std::process::Output;
 
+use env::current_exe;
 use raytrace::image::*;
 use raytrace::vec3::*;
 
@@ -27,11 +29,17 @@ fn image_test(path: &str) {
         }
     }
     image.write_ppm(path).unwrap();
-    ppm_to_png(path).expect("converting is failed ppm to png");
+    let output = ppm_to_png(path).expect("converting is failed ppm to png");
 }
 
+//depend on imagemagick
 pub fn ppm_to_png(path: &str) -> Result<Output, Error> {
-        Command::new("cmd")
-                .arg(format!("{} {} {}.png", "magick convert", path, path))
-                .output()
+
+    let current_path = env::current_dir().unwrap().to_str().unwrap().to_string();
+    let command = format!("{} {}\\{} {}\\{}.png", "magick convert", current_path, path, current_path, path);
+
+    Command::new("powershell")
+            .current_dir(env::current_dir()?)
+            .arg(command)
+            .output()
 }
