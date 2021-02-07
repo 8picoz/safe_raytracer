@@ -1,19 +1,19 @@
 use crate::vec3::*;
 
-const TMIN: f32 = 1e-3f;
-const TMAX: f32 = 10000;
+const TMIN: f32 = 1e-3;
+const TMAX: f32 = 10000.0;
 
 pub struct Ray {
-    origin: Vec3f,
-    direction: Vec3f,
+    pub origin: Vec3f,
+    pub direction: Vec3f,
 }
 
 impl Ray {
-    fn new(origin: Vec3f, direction: Vec3f) -> Self {
+    pub fn new(origin: Vec3f, direction: Vec3f) -> Self {
         Ray { origin, direction }
     }
 
-    fn point_on_ray(distance: f32) -> Vec3f {
-        return origin + direction * distance;
+    pub fn point_on_ray(&self, distance: f32) -> Vec3f {
+        self.origin + self.direction * distance
     }
 }
