@@ -1,7 +1,15 @@
+use std::io::Error;
+use std::process::Command;
+use std::process::Output;
+
 use raytrace::image::*;
 use raytrace::vec3::*;
 
 fn main() {
+    image_test("output.ppm");
+}
+
+fn image_test(path: &str) {
     let mut image = Image::new(512, 512);
     let canvas_size = image.get_size();
 
@@ -18,5 +26,12 @@ fn main() {
             );
         }
     }
-    image.write_ppm("output.ppm").unwrap();
+    image.write_ppm(path).unwrap();
+    ppm_to_png(path).expect("converting is failed ppm to png");
+}
+
+pub fn ppm_to_png(path: &str) -> Result<Output, Error> {
+        Command::new("cmd")
+                .arg(format!("{} {} {}.png", "magick convert", path, path))
+                .output()
 }
