@@ -183,3 +183,5 @@ where
         }
     }
 }
+
+pub type Vec3f = Vec3<f32>;
