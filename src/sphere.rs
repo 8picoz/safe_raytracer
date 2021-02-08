@@ -2,6 +2,7 @@ use crate::intersect_info::*;
 use crate::ray::*;
 use crate::vec3::*;
 
+#[derive(Debug)]
 pub struct Sphere {
     pub point: Vec3f,
     pub radius: f32,
@@ -44,10 +45,12 @@ impl Sphere {
             ans,
             hit_position,
             (hit_position - self.point).normalized(),
+            self,
         ))
     }
 }
 
+#[derive(Debug)]
 pub enum SphereMaterial {
     Diffuce,
     Mirror,

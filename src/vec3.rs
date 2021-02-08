@@ -11,14 +11,6 @@ where
     pub z: T,
 }
 
-//rgb
-impl Vec3<f32> {
-    //rgbとvecは別物なので型を分けたほうが良い気がする
-    pub fn new_rgb(x: f32, y: f32, z: f32) -> Self {
-        Vec3 { x, y, z }
-    }
-}
-
 impl<T> Vec3<T>
 where
     T: Copy,
@@ -173,3 +165,4 @@ where
 }
 
 pub type Vec3f = Vec3<f32>;
+pub type Color = Vec3<f32>;

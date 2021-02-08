@@ -1,6 +1,6 @@
-use crate::sphere::*;
 use crate::intersect_info::*;
 use crate::ray::*;
+use crate::sphere::*;
 
 #[derive(Default)]
 pub struct Scene {
@@ -17,11 +17,9 @@ impl Scene {
     }
 
     pub fn collision_detect(&self, ray: Ray) -> Option<IntersectInfo> {
-
         let mut infos = Vec::new();
 
         for sphere in self.spheres.iter() {
-
             let c_to_o = ray.origin - sphere.point;
             let b = ray.direction.dot(c_to_o);
             let c = c_to_o.sqr_magnitude() - num::pow(sphere.radius, 2);
@@ -46,9 +44,9 @@ impl Scene {
                 ans,
                 hit_position,
                 (hit_position - sphere.point).normalized(),
+                sphere,
             );
 
-            
             infos.push(info);
         }
 
@@ -56,6 +54,15 @@ impl Scene {
             return None;
         }
 
-        Some(infos.into_iter().min_by(|a, b| a.distance.partial_cmp(&b.distance).expect("failed to compare")).expect("failed to pick max value"))
+        Some(
+            infos
+                .into_iter()
+                .min_by(|a, b| {
+                    a.distance
+                        .partial_cmp(&b.distance)
+                        .expect("failed to compare")
+                })
+                .expect("failed to pick max value"),
+        )
     }
 }
