@@ -43,8 +43,6 @@ pub fn raytrace(camera_ray: Ray, scene: &Scene, index: u32) -> Color {
         let directional_light_ray = Ray::new(info.point, scene.directional_light);
         if scene.collision_detect(&directional_light_ray).is_none() {
             return info.target_sphere.rgb * scene.directional_light.dot(info.normal).max(0.0);
-        } else {
-            return info.target_sphere.rgb * 0.0;
         }
     }
 

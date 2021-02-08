@@ -23,11 +23,18 @@ fn raytrace_test(path: &str) {
     let mut image = Image::new(512, 512);
     let canvas_size = image.get_size();
 
-    let camera = PinholeCamera::new(Vec3::new(0.0, 0.0, 5.0), Vec3::new(0.0, 0.0, -1.0), 1.0);
+    let camera = PinholeCamera::new(Vec3::new(-1.0, 0.0, 5.0), Vec3::new(0.0, 0.0, -1.0), 1.0);
 
     let mut scene: Scene = Scene::new_without_spheres(Vec3::new(0.5, 1.0, 0.5).normalized());
     scene.add_sphere(Sphere::new(
-        Vec3::new(-1.0, 0.0, 1.0),
+        Vec3::new(0.0, -1001.0, 0.0),
+        1000.0,
+        Material::Diffuce,
+        Vec3::new(0.9, 0.9, 0.9),
+    ));
+    
+    scene.add_sphere(Sphere::new(
+        Vec3::new(-2.0, 0.0, 1.0),
         1.0,
         Material::Diffuce,
         Vec3::new(1.0, 0.0, 0.0),
@@ -39,7 +46,7 @@ fn raytrace_test(path: &str) {
         Vec3::new(0.0, 1.0, 0.0),
     ));
     scene.add_sphere(Sphere::new(
-        Vec3::new(1.0, 0.0, -1.0),
+        Vec3::new(2.0, 0.0, -1.0),
         1.0,
         Material::Diffuce,
         Vec3::new(0.0, 0.0, 1.0),
