@@ -1,4 +1,5 @@
 use crate::intersect_info::*;
+use crate::material::Material;
 use crate::ray::*;
 use crate::vec3::*;
 
@@ -6,12 +7,12 @@ use crate::vec3::*;
 pub struct Sphere {
     pub point: Vec3f,
     pub radius: f32,
-    pub material: SphereMaterial,
+    pub material: Material,
     pub rgb: Vec3f,
 }
 
 impl Sphere {
-    pub fn new(point: Vec3f, radius: f32, material: SphereMaterial, rgb: Vec3f) -> Self {
+    pub fn new(point: Vec3f, radius: f32, material: Material, rgb: Vec3f) -> Self {
         Sphere {
             point,
             radius,
@@ -48,11 +49,4 @@ impl Sphere {
             self,
         ))
     }
-}
-
-#[derive(Debug)]
-pub enum SphereMaterial {
-    Diffuce,
-    Mirror,
-    Glass,
 }

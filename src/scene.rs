@@ -1,22 +1,35 @@
+use std::fs::DirEntry;
+
 use crate::intersect_info::*;
 use crate::ray::*;
 use crate::sphere::*;
+use crate::vec3::Vec3f;
 
-#[derive(Default)]
 pub struct Scene {
     spheres: Vec<Sphere>,
+    pub directional_light: Vec3f,
 }
 
 impl Scene {
-    pub fn new_with_spheres(spheres: Vec<Sphere>) -> Self {
-        Scene { spheres }
+    pub fn new_without_spheres(directional_light: Vec3f) -> Self {
+        Scene {
+            spheres: Vec::new(),
+            directional_light,
+        }
+    }
+
+    pub fn new_with_spheres(spheres: Vec<Sphere>, directional_light: Vec3f) -> Self {
+        Scene {
+            spheres,
+            directional_light,
+        }
     }
 
     pub fn add_sphere(&mut self, sphere: Sphere) {
         self.spheres.push(sphere);
     }
 
-    pub fn collision_detect(&self, ray: Ray) -> Option<IntersectInfo> {
+    pub fn collision_detect(&self, ray: &Ray) -> Option<IntersectInfo> {
         let mut infos = Vec::new();
 
         for sphere in self.spheres.iter() {

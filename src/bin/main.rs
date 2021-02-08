@@ -5,6 +5,7 @@ use std::process::Command;
 use std::process::Output;
 
 use raytracer::image::*;
+use raytracer::material::*;
 use raytracer::pinhole_camera::*;
 use raytracer::scene::*;
 use raytracer::sphere::*;
@@ -24,23 +25,30 @@ fn raytrace_test(path: &str) {
 
     let camera = PinholeCamera::new(Vec3::new(0.0, 0.0, 5.0), Vec3::new(0.0, 0.0, -1.0), 1.0);
 
-    let mut scene: Scene = Default::default();
+    let mut scene: Scene = Scene::new_without_spheres(Vec3::new(0.5, 1.0, 0.5).normalized());
     scene.add_sphere(Sphere::new(
         Vec3::new(-1.0, 0.0, 1.0),
         1.0,
-        SphereMaterial::Diffuce,
-        Vec3::new(1.0, 1.0, 1.0),
+        Material::Diffuce,
+        Vec3::new(1.0, 0.0, 0.0),
     ));
     scene.add_sphere(Sphere::new(
         Vec3::new(0.0, 0.0, 0.0),
         1.0,
-        SphereMaterial::Diffuce,
-        Vec3::new(1.0, 1.0, 1.0),
+        Material::Diffuce,
+        Vec3::new(0.0, 1.0, 0.0),
     ));
     scene.add_sphere(Sphere::new(
         Vec3::new(1.0, 0.0, -1.0),
         1.0,
-        SphereMaterial::Diffuce,
+        Material::Diffuce,
+        Vec3::new(0.0, 0.0, 1.0),
+    ));
+
+    scene.add_sphere(Sphere::new(
+        Vec3::new(-2.0, 2.0, 1.0),
+        1.0,
+        Material::Mirror,
         Vec3::new(1.0, 1.0, 1.0),
     ));
 
@@ -50,11 +58,7 @@ fn raytrace_test(path: &str) {
             let v = (2.0 * j as f32 - canvas_size.1 as f32) / canvas_size.1 as f32;
 
             let ray = camera.make_ray_to_pinhole(u, v);
-            image.set_pixel(
-                i,
-                j,
-                raytracer::raytrace(ray, &scene, Vec3::new(0.5, 1.0, 0.5).normalized(), 0),
-            );
+            image.set_pixel(i, j, raytracer::raytrace(ray, &scene, 0));
         }
     }
 
@@ -68,23 +72,23 @@ fn scene_test(path: &str) {
 
     let camera = PinholeCamera::new(Vec3::new(0.0, 0.0, 5.0), Vec3::new(0.0, 0.0, -1.0), 1.0);
 
-    let mut scene: Scene = Default::default();
+    let mut scene: Scene = Scene::new_without_spheres(Vec3::new(0.5, 1.0, 0.5).normalized());
     scene.add_sphere(Sphere::new(
         Vec3::new(-1.0, 0.0, 1.0),
         1.0,
-        SphereMaterial::Diffuce,
+        Material::Diffuce,
         Vec3::new(1.0, 1.0, 1.0),
     ));
     scene.add_sphere(Sphere::new(
         Vec3::new(0.0, 0.0, 0.0),
         1.0,
-        SphereMaterial::Diffuce,
+        Material::Diffuce,
         Vec3::new(1.0, 1.0, 1.0),
     ));
     scene.add_sphere(Sphere::new(
         Vec3::new(1.0, 0.0, -1.0),
         1.0,
-        SphereMaterial::Diffuce,
+        Material::Diffuce,
         Vec3::new(1.0, 1.0, 1.0),
     ));
 
@@ -94,7 +98,7 @@ fn scene_test(path: &str) {
             let v = (2.0 * j as f32 - canvas_size.1 as f32) / canvas_size.1 as f32;
 
             let ray = camera.make_ray_to_pinhole(u, v);
-            if let Some(info) = scene.collision_detect(ray) {
+            if let Some(info) = scene.collision_detect(&ray) {
                 image.set_pixel(i, j, info.normal * 0.5 + Vec3::new(0.5, 0.5, 0.5));
             } else {
                 image.set_pixel(i, j, Vec3::new(0.0, 0.0, 0.0));
@@ -115,7 +119,7 @@ fn sphere_test(path: &str) {
     let sphere = Sphere::new(
         Vec3::new(0.0, 0.0, 0.0),
         1.0,
-        SphereMaterial::Diffuce,
+        Material::Diffuce,
         Vec3::new(1.0, 1.0, 1.0),
     );
 
