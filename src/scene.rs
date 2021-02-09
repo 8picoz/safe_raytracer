@@ -1,7 +1,6 @@
-use std::fs::DirEntry;
-
 use crate::intersect_info::*;
 use crate::ray::*;
+use crate::sphere;
 use crate::sphere::*;
 use crate::vec3::Vec3f;
 

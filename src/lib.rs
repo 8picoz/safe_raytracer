@@ -44,18 +44,49 @@ impl<'a> Raytracer<'a> {
                         index + 1,
                     );
                 }
-                Material::Glass => {}
+                Material::Glass => {
+                    let is_inside = (camera_ray.direction * -1.0).dot(info.normal) < 0.0;
+
+                    if !is_inside {
+                        //球体のガラスが内側からか外側からかで屈折率が変化する
+                        //他にも法線の向きが逆に
+                        if let Some(direction) =
+                            Raytracer::refract(camera_ray.direction * -1.0, info.normal, 1.0, 1.5)
+                        {
+                            return self
+                                .raytrace(Ray::new(info.point, direction.normalized()), index + 1);
+                        }
+
+                        return Vec3::new(0.0, 0.0, 0.0);
+                    }
+
+                    if let Some(direction) = Raytracer::refract(
+                        camera_ray.direction * -1.0,
+                        info.normal * -1.0,
+                        1.5,
+                        1.0,
+                    ) {
+                        return self
+                            .raytrace(Ray::new(info.point, direction.normalized()), index + 1);
+                    }
+
+                    return Vec3::new(0.0, 0.0, 0.0);
+                }
                 _ => (),
             }
 
             let directional_light_ray = Ray::new(info.point, self.scene.directional_light);
-            if self
-                .scene
-                .collision_detect(&directional_light_ray)
-                .is_none()
+            let ray_info = self.scene.collision_detect(&directional_light_ray);
+
+            if ray_info.is_none()
             {
                 return info.target_sphere.rgb
                     * self.scene.directional_light.dot(info.normal).max(0.0);
+            } else if let Some(ray_info) = ray_info {
+                if ray_info.target_sphere.material == Material::Glass {
+                    return info.target_sphere.rgb
+                        * self.scene.directional_light.dot(info.normal).max(0.0);
+                }
             }
         }
 
@@ -67,7 +98,20 @@ impl<'a> Raytracer<'a> {
     }
 
     //ベクトルを生で考えずに横成分と縦成分に分割して考えてる
-    fn refract() -> Vec3f {
-        Vec3::new(0.0, 0.0, 0.0)
+    //https://i.imgur.com/vD5gz5h.png
+    fn refract(in_vec: Vec3f, normal_of_point: Vec3f, in_ior: f32, out_ior: f32) -> Option<Vec3f> {
+        let cos1 = in_vec.dot(normal_of_point);
+        let in_vech = in_vec - normal_of_point * cos1;
+
+        let out_vech = in_vech * -(in_ior / out_ior);
+
+        if out_vech.magnitude() > 1.0 {
+            return None;
+        }
+
+        let cos2 = (1.0 - out_vech.sqr_magnitude()).sqrt();
+        let out_vecp = normal_of_point * -cos2;
+
+        Some(out_vech + out_vecp)
     }
 }
