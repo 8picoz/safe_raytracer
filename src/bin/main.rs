@@ -7,9 +7,11 @@ use std::process::Output;
 use raytracer::image::*;
 use raytracer::material::*;
 use raytracer::pinhole_camera::*;
+use raytracer::ray::Ray;
 use raytracer::scene::*;
 use raytracer::sphere::*;
 use raytracer::vec3::*;
+use raytracer::*;
 
 fn main() {
     //image_test("output.ppm");
@@ -65,7 +67,9 @@ fn raytrace_test(path: &str) {
             let v = (2.0 * j as f32 - canvas_size.1 as f32) / canvas_size.1 as f32;
 
             let ray = camera.make_ray_to_pinhole(u, v);
-            image.set_pixel(i, j, raytracer::raytrace(ray, &scene, 0));
+            let raytracer = Raytracer::new(100, &scene);
+
+            image.set_pixel(i, j, raytracer.raytrace(ray, 0));
         }
     }
 
