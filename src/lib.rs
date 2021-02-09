@@ -38,18 +38,24 @@ impl<'a> Raytracer<'a> {
                     return self.raytrace(
                         Ray::new(
                             info.point,
-                            Raytracer::reflect(camera_ray.direction * -1.0, info.normal).normalized(),
+                            Raytracer::reflect(camera_ray.direction * -1.0, info.normal)
+                                .normalized(),
                         ),
                         index + 1,
                     );
                 }
-                Material::Glass => {},
+                Material::Glass => {}
                 _ => (),
             }
 
             let directional_light_ray = Ray::new(info.point, self.scene.directional_light);
-            if self.scene.collision_detect(&directional_light_ray).is_none() {
-                return info.target_sphere.rgb * self.scene.directional_light.dot(info.normal).max(0.0);
+            if self
+                .scene
+                .collision_detect(&directional_light_ray)
+                .is_none()
+            {
+                return info.target_sphere.rgb
+                    * self.scene.directional_light.dot(info.normal).max(0.0);
             }
         }
 

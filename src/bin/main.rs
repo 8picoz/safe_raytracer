@@ -34,7 +34,7 @@ fn raytrace_test(path: &str) {
         Material::Diffuce,
         Vec3::new(0.9, 0.9, 0.9),
     ));
-    
+
     scene.add_sphere(Sphere::new(
         Vec3::new(-2.0, 0.0, 1.0),
         1.0,
