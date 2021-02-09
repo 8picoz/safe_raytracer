@@ -12,9 +12,11 @@ mod tests;
 
 use std::u32;
 
+use intersect_info::IntersectInfo;
 use material::Material;
 use ray::*;
 use scene::*;
+use sphere::Sphere;
 use vec3::*;
 
 pub struct Raytracer<'a> {
@@ -78,15 +80,27 @@ impl<'a> Raytracer<'a> {
             let directional_light_ray = Ray::new(info.point, self.scene.directional_light);
             let ray_info = self.scene.collision_detect(&directional_light_ray);
 
-            if ray_info.is_none()
-            {
-                return info.target_sphere.rgb
-                    * self.scene.directional_light.dot(info.normal).max(0.0);
-            } else if let Some(ray_info) = ray_info {
-                if ray_info.target_sphere.material == Material::Glass {
+            let satisfies_guard_sphere = Sphere::new(
+                Vec3::new(0.0, 0.0, 0.0),
+                0.0,
+                Material::Glass,
+                Vec3::new(0.0, 0.0, 0.0),
+            );
+
+            let satisfies_guard = IntersectInfo::new(
+                0.0,
+                Vec3::new(0.0, 0.0, 0.0),
+                Vec3::new(0.0, 0.0, 0.0),
+                &satisfies_guard_sphere,
+            );
+            match (ray_info, satisfies_guard) {
+                (None, ray_info) | (Some(ray_info), _)
+                    if ray_info.target_sphere.material == Material::Glass =>
+                {
                     return info.target_sphere.rgb
                         * self.scene.directional_light.dot(info.normal).max(0.0);
                 }
+                _ => (),
             }
         }
 
