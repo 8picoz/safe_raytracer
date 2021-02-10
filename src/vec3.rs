@@ -11,6 +11,12 @@ where
     pub z: T,
 }
 
+impl From<f32> for Vec3<f32> {
+    fn from(input: f32) -> Self {
+        Vec3::new(input, input, input)
+    }
+}
+
 impl<T> Vec3<T>
 where
     T: Copy,
