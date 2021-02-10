@@ -3,8 +3,8 @@ use std::env;
 use std::io::Error;
 use std::process::Command;
 use std::process::Output;
+use std::sync::{mpsc, Arc, Mutex};
 use std::thread;
-use std::sync::{Arc, Mutex, mpsc};
 
 use raytracer::image::*;
 use raytracer::material::*;
@@ -28,10 +28,14 @@ fn raytrace_test(path: &str) {
 
     let image = Arc::new(Mutex::new(image));
 
-    let camera = Arc::new(PinholeCamera::new(Vec3::new(0.0, 2.0, 8.0), Vec3::new(0.0, 0.0, -1.0), 1.0));
+    let camera = Arc::new(PinholeCamera::new(
+        Vec3::new(0.0, 2.0, 8.0),
+        Vec3::new(0.0, 0.0, -1.0),
+        1.0,
+    ));
 
     let mut scene: Scene = Scene::new_without_spheres(Vec3::new(0.5, 1.0, 0.5).normalized());
-    
+
     scene.add_sphere(Sphere::new(
         Vec3::new(0.0, -1001.0, 0.0),
         1000.0,
@@ -85,7 +89,10 @@ fn raytrace_test(path: &str) {
                 let ray = camera.make_ray_to_pinhole(u, v);
                 let raytracer = Raytracer::new(100, &scene);
 
-                image.lock().unwrap().set_pixel(i, j, raytracer.raytrace(ray, 0));
+                image
+                    .lock()
+                    .unwrap()
+                    .set_pixel(i, j, raytracer.raytrace(ray, 0));
             }
         }));
     }
@@ -94,7 +101,11 @@ fn raytrace_test(path: &str) {
         handle.join().unwrap();
     }
 
-    image.lock().unwrap().write_ppm(path).expect("failed to write ppm");
+    image
+        .lock()
+        .unwrap()
+        .write_ppm(path)
+        .expect("failed to write ppm");
     ppm_to_png(path).expect("converting is failed ppm to png");
 }
 
