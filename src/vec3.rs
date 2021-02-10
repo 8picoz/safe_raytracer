@@ -4,7 +4,7 @@ use std::ops;
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Vec3<T>
 where
-    T: Copy,
+    T: Copy + Send + Sync,
 {
     pub x: T,
     pub y: T,
@@ -19,7 +19,7 @@ impl From<f32> for Vec3<f32> {
 
 impl<T> Vec3<T>
 where
-    T: Copy,
+    T: Copy + Send + Sync,
 {
     pub fn new(x: T, y: T, z: T) -> Self {
         Vec3 { x, y, z }
@@ -28,7 +28,7 @@ where
 
 impl<T> Vec3<T>
 where
-    T: ops::Add<Output = T> + ops::Mul<Output = T> + Copy,
+    T: ops::Add<Output = T> + ops::Mul<Output = T> + Copy + Send + Sync,
 {
     //内積
     pub fn dot(self, rhs: Self) -> T {
@@ -43,7 +43,7 @@ where
 
 impl<T> Vec3<T>
 where
-    T: ops::Add<Output = T> + ops::Mul<Output = T> + Copy + Float,
+    T: ops::Add<Output = T> + ops::Mul<Output = T> + Copy + Send + Sync + Float,
 {
     //[TODO] ノルム
     pub fn magnitude(self) -> T {
@@ -58,7 +58,7 @@ where
 //外積
 impl<T> Vec3<T>
 where
-    T: ops::Sub<Output = T> + ops::Mul<Output = T> + Copy,
+    T: ops::Sub<Output = T> + ops::Mul<Output = T> + Copy + Send + Sync,
 {
     pub fn cross(self, rhs: Self) -> Self {
         Self {
@@ -72,7 +72,7 @@ where
 //加算
 impl<T> ops::Add<Self> for Vec3<T>
 where
-    T: ops::Add<Output = T> + Copy,
+    T: ops::Add<Output = T> + Copy + Send + Sync,
 {
     type Output = Self;
 
@@ -88,7 +88,7 @@ where
 //減算
 impl<T> ops::Sub<Self> for Vec3<T>
 where
-    T: ops::Sub<Output = T> + Copy,
+    T: ops::Sub<Output = T> + Copy + Send + Sync,
 {
     type Output = Self;
 
@@ -104,7 +104,7 @@ where
 //除算 vec3 / k
 impl<T> ops::Div<T> for Vec3<T>
 where
-    T: ops::Div<Output = T> + Copy,
+    T: ops::Div<Output = T> + Copy + Send + Sync,
 {
     type Output = Self;
 
@@ -120,7 +120,7 @@ where
 //スカラー倍 vec3 * k
 impl<T> ops::Mul<T> for Vec3<T>
 where
-    T: ops::Mul<Output = T> + Copy,
+    T: ops::Mul<Output = T> + Copy + Send + Sync,
 {
     type Output = Self;
 
@@ -139,7 +139,7 @@ pub struct MultiplableType<T: ops::Mul>(T);
 //スカラー倍 k * vec3
 impl<T> ops::Mul<Vec3<T>> for MultiplableType<T>
 where
-    T: ops::Mul<Output = T> + Copy,
+    T: ops::Mul<Output = T> + Copy + Send + Sync,
 {
     type Output = Vec3<T>;
 
@@ -157,7 +157,7 @@ where
 //アダマール積
 impl<T> ops::Mul<Self> for Vec3<T>
 where
-    T: ops::Mul<Output = T> + Copy,
+    T: ops::Mul<Output = T> + Copy + Send + Sync,
 {
     type Output = Self;
 

@@ -3,6 +3,8 @@ use std::env;
 use std::io::Error;
 use std::process::Command;
 use std::process::Output;
+use std::thread;
+use std::sync::{Arc, Mutex, mpsc};
 
 use raytracer::image::*;
 use raytracer::material::*;
@@ -24,9 +26,12 @@ fn raytrace_test(path: &str) {
     let mut image = Image::new(512, 512);
     let canvas_size = image.get_size();
 
-    let camera = PinholeCamera::new(Vec3::new(0.0, 2.0, 8.0), Vec3::new(0.0, 0.0, -1.0), 1.0);
+    let image = Arc::new(Mutex::new(image));
+
+    let camera = Arc::new(PinholeCamera::new(Vec3::new(0.0, 2.0, 8.0), Vec3::new(0.0, 0.0, -1.0), 1.0));
 
     let mut scene: Scene = Scene::new_without_spheres(Vec3::new(0.5, 1.0, 0.5).normalized());
+    
     scene.add_sphere(Sphere::new(
         Vec3::new(0.0, -1001.0, 0.0),
         1000.0,
@@ -67,19 +72,29 @@ fn raytrace_test(path: &str) {
         Vec3::new(1.0, 1.0, 1.0),
     ));
 
+    let scene = Arc::new(scene);
+    let mut handles = vec![];
+
     for j in 0..canvas_size.1 {
-        for i in 0..canvas_size.0 {
-            let u = (2.0 * i as f32 - canvas_size.0 as f32) / canvas_size.0 as f32;
-            let v = (2.0 * j as f32 - canvas_size.1 as f32) / canvas_size.1 as f32;
+        let (image, camera, scene) = (image.clone(), camera.clone(), scene.clone());
+        handles.push(thread::spawn(move || {
+            for i in 0..canvas_size.0 {
+                let u = (2.0 * i as f32 - canvas_size.0 as f32) / canvas_size.0 as f32;
+                let v = (2.0 * j as f32 - canvas_size.1 as f32) / canvas_size.1 as f32;
 
-            let ray = camera.make_ray_to_pinhole(u, v);
-            let raytracer = Raytracer::new(100, &scene);
+                let ray = camera.make_ray_to_pinhole(u, v);
+                let raytracer = Raytracer::new(100, &scene);
 
-            image.set_pixel(i, j, raytracer.raytrace(ray, 0));
-        }
+                image.lock().unwrap().set_pixel(i, j, raytracer.raytrace(ray, 0));
+            }
+        }));
     }
 
-    image.write_ppm(path).expect("failed to write ppm");
+    for handle in handles {
+        handle.join().unwrap();
+    }
+
+    image.lock().unwrap().write_ppm(path).expect("failed to write ppm");
     ppm_to_png(path).expect("converting is failed ppm to png");
 }
 
