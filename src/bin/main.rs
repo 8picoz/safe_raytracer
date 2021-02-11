@@ -105,9 +105,7 @@ fn raytrace_test(path: &str) {
 
     image.gamma_set();
 
-    image
-        .write_ppm(path)
-        .expect("failed to write ppm");
+    image.write_ppm(path).expect("failed to write ppm");
     //ppm_to_png(path).expect("converting is failed ppm to png");
 }
 
