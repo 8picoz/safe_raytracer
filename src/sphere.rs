@@ -8,16 +8,16 @@ pub struct Sphere {
     pub point: Vec3f,
     pub radius: f32,
     pub material: Material,
-    pub rgb: Vec3f,
+    pub kd: Vec3f,
 }
 
 impl Sphere {
-    pub fn new(point: Vec3f, radius: f32, material: Material, rgb: Vec3f) -> Self {
+    pub fn new(point: Vec3f, radius: f32, material: Material, kd: Vec3f) -> Self {
         Sphere {
             point,
             radius,
             material,
-            rgb,
+            kd,
         }
     }
 

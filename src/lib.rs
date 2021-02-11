@@ -97,7 +97,7 @@ impl<'a> Raytracer<'a> {
                 (None, ray_info) | (Some(ray_info), _)
                     if ray_info.target_sphere.material == Material::Glass =>
                 {
-                    return info.target_sphere.rgb
+                    return info.target_sphere.kd
                         * self.scene.directional_light.dot(info.normal).max(0.0);
                 }
                 _ => (),

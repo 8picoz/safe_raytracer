@@ -1,10 +1,10 @@
+extern crate image;
+
 use core::f32;
-use std::env;
-use std::io::Error;
-use std::process::Command;
-use std::process::Output;
 use std::sync::{Arc, Mutex};
 use std::thread;
+
+use image::{GenericImage, GenericImageView, ImageBuffer, RgbImage};
 
 use raytracer::image::*;
 use raytracer::material::*;
@@ -19,7 +19,12 @@ fn main() {
     //pinhole_camera_test(1024, 512, "output.ppm");
     //sphere_test(1024, 512, "output.ppm");
     //scene_test(1024, 512, "output.ppm");
-    raytrace_test(1024, 512, "output.ppm");
+    //raytrace_test(1024, 512, "output.ppm");
+    raytrace_test(1024, 512, "output.png");
+}
+
+fn raytrace_test_with_image_crate(width: usize, height: usize, path: &str) {
+
 }
 
 fn raytrace_test(width: usize, height: usize, path: &str) {

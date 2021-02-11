@@ -30,12 +30,12 @@ impl Image {
         (self.width, self.height)
     }
 
-    pub fn set_pixel(&mut self, x: usize, y: usize, rgb: Vec3f) {
+    pub fn set_pixel(&mut self, x: usize, y: usize, kd: Vec3f) {
         let target_pixel_index = 3 * x + 3 * self.width * y;
 
-        self.canvas[target_pixel_index] = rgb.x;
-        self.canvas[target_pixel_index + 1] = rgb.y;
-        self.canvas[target_pixel_index + 2] = rgb.z;
+        self.canvas[target_pixel_index] = kd.x;
+        self.canvas[target_pixel_index + 1] = kd.y;
+        self.canvas[target_pixel_index + 2] = kd.z;
     }
 
     pub fn write_ppm(&self, output_name: &str) -> io::Result<()> {
