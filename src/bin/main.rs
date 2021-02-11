@@ -3,7 +3,7 @@ use std::env;
 use std::io::Error;
 use std::process::Command;
 use std::process::Output;
-use std::sync::{mpsc, Arc, Mutex};
+use std::sync::{Arc, Mutex};
 use std::thread;
 
 use raytracer::image::*;
@@ -23,7 +23,7 @@ fn main() {
 }
 
 fn raytrace_test(path: &str) {
-    let mut image = Image::new(512, 512);
+    let image = Image::new(512, 512);
     let canvas_size = image.get_size();
 
     let image = Arc::new(Mutex::new(image));
@@ -101,9 +101,11 @@ fn raytrace_test(path: &str) {
         handle.join().unwrap();
     }
 
+    let mut image = image.lock().unwrap();
+
+    image.gamma_set();
+
     image
-        .lock()
-        .unwrap()
         .write_ppm(path)
         .expect("failed to write ppm");
     ppm_to_png(path).expect("converting is failed ppm to png");
