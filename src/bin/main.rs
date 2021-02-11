@@ -106,7 +106,7 @@ fn raytrace_test(path: &str) {
     image.gamma_set();
 
     image.write_ppm(path).expect("failed to write ppm");
-    //ppm_to_png(path).expect("converting is failed ppm to png");
+    ppm_to_png(path).unwrap_or_else(|err| eprintln!("converting is failed ppm to png: {}", err));
 }
 
 fn scene_test(path: &str) {
@@ -228,16 +228,15 @@ fn image_test(path: &str) {
     ppm_to_png(path).expect("failed to convert ppm to png");
 }
 
-//depend on imagemagick and windows
-pub fn ppm_to_png(path: &str) -> Result<Output, Error> {
+//depend on imagemagick and powershell
+pub fn ppm_to_png(path: &str) -> Result<(), Error> {
     let current_path = env::current_dir().unwrap().to_str().unwrap().to_string();
     let command = format!(
         "{} {}\\{} {}\\{}.png",
         "magick convert", current_path, path, current_path, path
     );
 
-    Command::new("powershell")
-        .current_dir(env::current_dir()?)
-        .arg(command)
-        .output()
+    Command::new("powershell").arg(command).output()?;
+
+    Ok(())
 }
