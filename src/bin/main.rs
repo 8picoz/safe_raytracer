@@ -106,7 +106,7 @@ fn raytrace_test(path: &str) {
     image.gamma_set();
 
     image.write_ppm(path).expect("failed to write ppm");
-    ppm_to_png(path).unwrap_or_else(|err| eprintln!("converting is failed ppm to png: {}", err));
+    ppm_to_png(path).unwrap_or_else(|err| eprintln!("converting is failed ppm to png(This function depends on imagemagick and powershell): {}", err));
 }
 
 fn scene_test(path: &str) {
