@@ -90,9 +90,9 @@ fn raytrace_test_with_image_crate(width: u32, height: u32, path: &str) {
 
                 let kd = raytracer.raytrace(ray, 0);
 
-                let r = num::clamp(kd.x * 255.0, 0.0, 255.0) as u8;
-                let g = num::clamp(kd.y * 255.0, 0.0, 255.0) as u8;
-                let b = num::clamp(kd.z * 255.0, 0.0, 255.0) as u8;
+                let r = num::clamp(kd.x.powf(1.0 / 2.2) * 255.0, 0.0, 255.0) as u8;
+                let g = num::clamp(kd.y.powf(1.0 / 2.2) * 255.0, 0.0, 255.0) as u8;
+                let b = num::clamp(kd.z.powf(1.0 / 2.2) * 255.0, 0.0, 255.0) as u8;
 
                 *pixel = image::Rgb([r, g, b]);
             }
