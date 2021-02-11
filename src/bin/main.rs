@@ -4,8 +4,6 @@ use core::f32;
 use std::sync::{Arc, Mutex};
 use std::thread;
 
-use image::{GenericImage, GenericImageView, ImageBuffer, RgbImage};
-
 use raytracer::image::*;
 use raytracer::material::*;
 use raytracer::pinhole_camera::*;
@@ -20,11 +18,93 @@ fn main() {
     //sphere_test(1024, 512, "output.ppm");
     //scene_test(1024, 512, "output.ppm");
     //raytrace_test(1024, 512, "output.ppm");
-    raytrace_test(1024, 512, "output.png");
+    raytrace_test_with_image_crate(1024, 512, "output.png");
 }
 
-fn raytrace_test_with_image_crate(width: usize, height: usize, path: &str) {
+fn raytrace_test_with_image_crate(width: u32, height: u32, path: &str) {
+    let image = image::ImageBuffer::new(width, height);
 
+    let mut scene: Scene = Scene::new_without_spheres(Vec3::new(0.5, 1.0, 0.5).normalized());
+
+    scene.add_sphere(Sphere::new(
+        Vec3::new(0.0, -1001.0, 0.0),
+        1000.0,
+        Material::Diffuce,
+        Vec3::new(0.9, 0.9, 0.9),
+    ));
+
+    scene.add_sphere(Sphere::new(
+        Vec3::new(0.0, 2.0, 3.0),
+        1.0,
+        Material::Glass,
+        Vec3::new(0.0, 0.0, 0.0),
+    ));
+
+    scene.add_sphere(Sphere::new(
+        Vec3::new(-1.0, 0.0, 1.0),
+        1.0,
+        Material::Diffuce,
+        Vec3::new(1.0, 0.0, 0.0),
+    ));
+    scene.add_sphere(Sphere::new(
+        Vec3::new(0.0, 0.0, 0.0),
+        1.0,
+        Material::Diffuce,
+        Vec3::new(0.0, 1.0, 0.0),
+    ));
+    scene.add_sphere(Sphere::new(
+        Vec3::new(1.0, 0.0, -1.0),
+        1.0,
+        Material::Diffuce,
+        Vec3::new(0.0, 0.0, 1.0),
+    ));
+
+    scene.add_sphere(Sphere::new(
+        Vec3::new(-2.0, 2.0, 1.0),
+        1.0,
+        Material::Mirror,
+        Vec3::new(1.0, 1.0, 1.0),
+    ));
+
+    let camera = Arc::new(PinholeCamera::new(
+        Vec3::new(0.0, 2.0, 8.0),
+        Vec3::new(0.0, 0.0, -1.0),
+        1.0,
+    ));
+    let image = Arc::new(Mutex::new(image));
+    let scene = Arc::new(scene);
+    let mut handles = vec![];
+
+    for j in 0..height {
+        let (image, camera, scene) = (image.clone(), camera.clone(), scene.clone());
+        handles.push(thread::spawn(move || {
+            for i in 0..width {
+                let u = (2.0 * i as f32 - width as f32) / width as f32;
+                let v = (2.0 * j as f32 - height as f32) / width as f32;
+
+                let ray = camera.make_ray_to_pinhole(u, v);
+                let raytracer = Raytracer::new(100, &scene);
+
+                let mut image = image.lock().unwrap();
+                let pixel = image.get_pixel_mut(i, j); 
+
+                let kd = raytracer.raytrace(ray, 0);
+
+                let r = num::clamp(kd.x * 255.0, 0.0, 255.0) as u8;
+                let g = num::clamp(kd.y * 255.0, 0.0, 255.0) as u8;
+                let b = num::clamp(kd.z * 255.0, 0.0, 255.0) as u8;
+
+                *pixel = image::Rgb([r, g, b]);
+            }
+        }));
+    }
+
+    for handle in handles {
+        handle.join().unwrap();
+    }
+
+    let image = image.lock().unwrap();
+    image.save(path).unwrap();
 }
 
 fn raytrace_test(width: usize, height: usize, path: &str) {
