@@ -106,7 +106,6 @@ fn raytrace_test(width: usize, height: usize, path: &str) {
     image.gamma_set();
 
     image.write_ppm(path).expect("failed to write ppm");
-    ppm_to_png(path).unwrap_or_else(|err| eprintln!("converting is failed ppm to png(This function depends on imagemagick and powershell): {}", err));
 }
 
 fn scene_test(width: usize, height: usize, path: &str) {
@@ -150,7 +149,6 @@ fn scene_test(width: usize, height: usize, path: &str) {
     }
 
     image.write_ppm(path).expect("failed to write ppm");
-    ppm_to_png(path).expect("converting is failed ppm to png");
 }
 
 fn sphere_test(width: usize, height: usize, path: &str) {
@@ -182,7 +180,6 @@ fn sphere_test(width: usize, height: usize, path: &str) {
     }
 
     image.write_ppm(path).expect("failed to write ppm");
-    ppm_to_png(path).expect("converting is failed ppm to png");
 }
 
 //(2.0f * i - width) / widthは(i - width / 2.0f) / widthでも問題ない？
@@ -204,7 +201,6 @@ fn pinhole_camera_test(width: usize, height: usize, path: &str) {
         }
     }
     image.write_ppm(path).expect("failed to write ppm");
-    ppm_to_png(path).expect("converting is failed ppm to png");
 }
 
 fn image_test(width: usize, height: usize, path: &str) {
@@ -225,18 +221,4 @@ fn image_test(width: usize, height: usize, path: &str) {
         }
     }
     image.write_ppm(path).expect("failed to write ppm");
-    ppm_to_png(path).expect("failed to convert ppm to png");
-}
-
-//depend on imagemagick and powershell
-pub fn ppm_to_png(path: &str) -> Result<(), Error> {
-    let current_path = env::current_dir().unwrap().to_str().unwrap().to_string();
-    let command = format!(
-        "{} {}\\{} {}\\{}.png",
-        "magick convert", current_path, path, current_path, path
-    );
-
-    Command::new("powershell").arg(command).output()?;
-
-    Ok(())
 }
