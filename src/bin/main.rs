@@ -138,7 +138,7 @@ fn scene_test(path: &str) {
     for j in 0..canvas_size.1 {
         for i in 0..canvas_size.0 {
             let u = (2.0 * i as f32 - canvas_size.0 as f32) / canvas_size.0 as f32;
-            let v = (2.0 * j as f32 - canvas_size.1 as f32) / canvas_size.1 as f32;
+            let v = (2.0 * j as f32 - canvas_size.1 as f32) / canvas_size.0 as f32;
 
             let ray = camera.make_ray_to_pinhole(u, v);
             if let Some(info) = scene.collision_detect(&ray) {
@@ -169,7 +169,7 @@ fn sphere_test(path: &str) {
     for j in 0..canvas_size.1 {
         for i in 0..canvas_size.0 {
             let u = (2.0 * i as f32 - canvas_size.0 as f32) / canvas_size.0 as f32;
-            let v = (2.0 * j as f32 - canvas_size.1 as f32) / canvas_size.1 as f32;
+            let v = (2.0 * j as f32 - canvas_size.1 as f32) / canvas_size.0 as f32;
 
             let ray = camera.make_ray_to_pinhole(u, v);
 
@@ -196,7 +196,7 @@ fn pinhole_camera_test(path: &str) {
     for j in 0..canvas_size.1 {
         for i in 0..canvas_size.0 {
             let u = (2.0 * i as f32 - canvas_size.0 as f32) / canvas_size.0 as f32;
-            let v = (2.0 * j as f32 - canvas_size.1 as f32) / canvas_size.1 as f32;
+            let v = (2.0 * j as f32 - canvas_size.1 as f32) / canvas_size.0 as f32;
             let ray = camera.make_ray_to_pinhole(u, v);
             //println!("u: {}, v: {}", u, v);
 
