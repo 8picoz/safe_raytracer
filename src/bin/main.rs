@@ -23,7 +23,7 @@ fn main() {
 }
 
 fn raytrace_test(path: &str) {
-    let image = Image::new(512, 512);
+    let image = Image::new(1024, 512);
     let canvas_size = image.get_size();
 
     let image = Arc::new(Mutex::new(image));
@@ -84,7 +84,7 @@ fn raytrace_test(path: &str) {
         handles.push(thread::spawn(move || {
             for i in 0..canvas_size.0 {
                 let u = (2.0 * i as f32 - canvas_size.0 as f32) / canvas_size.0 as f32;
-                let v = (2.0 * j as f32 - canvas_size.1 as f32) / canvas_size.1 as f32;
+                let v = (2.0 * j as f32 - canvas_size.1 as f32) / canvas_size.0 as f32;
 
                 let ray = camera.make_ray_to_pinhole(u, v);
                 let raytracer = Raytracer::new(100, &scene);
@@ -108,7 +108,7 @@ fn raytrace_test(path: &str) {
     image
         .write_ppm(path)
         .expect("failed to write ppm");
-    ppm_to_png(path).expect("converting is failed ppm to png");
+    //ppm_to_png(path).expect("converting is failed ppm to png");
 }
 
 fn scene_test(path: &str) {
@@ -230,7 +230,7 @@ fn image_test(path: &str) {
     ppm_to_png(path).expect("failed to convert ppm to png");
 }
 
-//depend on imagemagick
+//depend on imagemagick and windows
 pub fn ppm_to_png(path: &str) -> Result<Output, Error> {
     let current_path = env::current_dir().unwrap().to_str().unwrap().to_string();
     let command = format!(
