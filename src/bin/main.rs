@@ -15,15 +15,15 @@ use raytracer::vec3::*;
 use raytracer::*;
 
 fn main() {
-    //image_test("output.ppm");
-    //pinhole_camera_test("output.ppm");
-    //sphere_test("output.ppm");
-    //scene_test("output.ppm");
-    raytrace_test("output.ppm");
+    //image_test(1024, 512, "output.ppm");
+    //pinhole_camera_test(1024, 512, "output.ppm");
+    //sphere_test(1024, 512, "output.ppm");
+    //scene_test(1024, 512, "output.ppm");
+    raytrace_test(1024, 512, "output.ppm");
 }
 
-fn raytrace_test(path: &str) {
-    let image = Image::new(1024, 512);
+fn raytrace_test(width: usize, height: usize, path: &str) {
+    let image = Image::new(width, height);
     let canvas_size = image.get_size();
 
     let image = Arc::new(Mutex::new(image));
@@ -109,8 +109,8 @@ fn raytrace_test(path: &str) {
     ppm_to_png(path).unwrap_or_else(|err| eprintln!("converting is failed ppm to png(This function depends on imagemagick and powershell): {}", err));
 }
 
-fn scene_test(path: &str) {
-    let mut image = Image::new(512, 512);
+fn scene_test(width: usize, height: usize, path: &str) {
+    let mut image = Image::new(width, height);
     let canvas_size = image.get_size();
 
     let camera = PinholeCamera::new(Vec3::new(0.0, 0.0, 5.0), Vec3::new(0.0, 0.0, -1.0), 1.0);
@@ -153,8 +153,8 @@ fn scene_test(path: &str) {
     ppm_to_png(path).expect("converting is failed ppm to png");
 }
 
-fn sphere_test(path: &str) {
-    let mut image = Image::new(512, 512);
+fn sphere_test(width: usize, height: usize, path: &str) {
+    let mut image = Image::new(width, height);
     let canvas_size = image.get_size();
 
     let camera = PinholeCamera::new(Vec3::new(0.0, 0.0, 3.0), Vec3::new(0.0, 0.0, -1.0), 1.0);
@@ -187,8 +187,8 @@ fn sphere_test(path: &str) {
 
 //(2.0f * i - width) / widthは(i - width / 2.0f) / widthでも問題ない？
 //widthが512の場合* 2.0f - widthで-512から512を取るようになるそれを512で割って[-1, 1]
-fn pinhole_camera_test(path: &str) {
-    let mut image = Image::new(512, 512);
+fn pinhole_camera_test(width: usize, height: usize, path: &str) {
+    let mut image = Image::new(width, height);
     let canvas_size = image.get_size();
 
     let camera = PinholeCamera::new(Vec3::new(0.0, 0.0, 0.0), Vec3::new(0.0, 0.0, -1.0), 1.0);
@@ -207,8 +207,8 @@ fn pinhole_camera_test(path: &str) {
     ppm_to_png(path).expect("converting is failed ppm to png");
 }
 
-fn image_test(path: &str) {
-    let mut image = Image::new(512, 512);
+fn image_test(width: usize, height: usize, path: &str) {
+    let mut image = Image::new(width, height);
     let canvas_size = image.get_size();
 
     for j in 0..canvas_size.1 {

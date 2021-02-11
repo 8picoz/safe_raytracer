@@ -49,13 +49,13 @@ impl Image {
         for j in 0..self.height {
             for i in 0..self.width {
                 let index = 3 * i + 3 * self.width * j;
-                let r = clamp(self.canvas[index] * 255.0, 0.0, 255.0);
-                let g = clamp(self.canvas[index + 1] * 255.0, 0.0, 255.0);
-                let b = clamp(self.canvas[index + 2] * 255.0, 0.0, 255.0);
+                let r = clamp(self.canvas[index] * 255.0, 0.0, 255.0) as usize;
+                let g = clamp(self.canvas[index + 1] * 255.0, 0.0, 255.0) as usize;
+                let b = clamp(self.canvas[index + 2] * 255.0, 0.0, 255.0) as usize;
 
-                writer.write_all(&format!("{} ", r as usize).as_bytes())?;
-                writer.write_all(&format!("{} ", g as usize).as_bytes())?;
-                writer.write_all(&format!("{}\r\n", b as usize).as_bytes())?;
+                writer.write_all(&format!("{} ", r).as_bytes())?;
+                writer.write_all(&format!("{} ", g).as_bytes())?;
+                writer.write_all(&format!("{}\r\n", b).as_bytes())?;
             }
         }
 
