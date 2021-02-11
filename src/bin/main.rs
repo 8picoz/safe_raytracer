@@ -84,16 +84,15 @@ fn raytrace_test_with_image_crate(width: u32, height: u32, path: &str) {
 
                 let ray = camera.make_ray_to_pinhole(u, v);
                 let raytracer = Raytracer::new(100, &scene);
-
-                let mut image = image.lock().unwrap();
-                let pixel = image.get_pixel_mut(i, j); 
-
+                
                 let kd = raytracer.raytrace(ray, 0);
-
+                
                 let r = num::clamp(kd.x.powf(1.0 / 2.2) * 255.0, 0.0, 255.0) as u8;
                 let g = num::clamp(kd.y.powf(1.0 / 2.2) * 255.0, 0.0, 255.0) as u8;
                 let b = num::clamp(kd.z.powf(1.0 / 2.2) * 255.0, 0.0, 255.0) as u8;
-
+                
+                let mut image = image.lock().unwrap();
+                let pixel = image.get_pixel_mut(i, j); 
                 *pixel = image::Rgb([r, g, b]);
             }
         }));
