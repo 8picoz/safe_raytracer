@@ -11,10 +11,7 @@ pub struct PinholeCamera {
 
 impl PinholeCamera {
     pub fn new(position: Vec3f, forward_direction: Vec3f, distance_to_pinhole: f32) -> Self {
-        let right_direction = forward_direction
-            .cross(Vec3::new(0.0, 1.0, 0.0))
-            .normalized();
-        let up_direction = right_direction.cross(forward_direction).normalized();
+        let (right_direction, up_direction) = forward_direction.make_basis();
 
         PinholeCamera {
             position,

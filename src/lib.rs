@@ -3,6 +3,7 @@ pub mod intersect_info;
 pub mod material;
 pub mod pinhole_camera;
 pub mod ray;
+pub mod rtao;
 pub mod scene;
 pub mod sphere;
 pub mod vec3;
@@ -10,11 +11,13 @@ pub mod vec3;
 #[cfg(test)]
 mod tests;
 
+use core::ascii;
 use std::u32;
 
 use intersect_info::IntersectInfo;
 use material::Material;
 use ray::*;
+use rtao::*;
 use scene::*;
 use sphere::Sphere;
 use vec3::*;
@@ -29,7 +32,7 @@ impl<'a> Raytracer<'a> {
         Raytracer { max_depth, scene }
     }
 
-    pub fn raytrace(&self, camera_ray: Ray, index: u32) -> Color {
+    pub fn raytrace(&self, camera_ray: Ray, ao_sampling_point: u32, index: u32) -> Color {
         if self.max_depth <= index {
             return Vec3::new(0.0, 0.0, 0.0);
         }
@@ -43,6 +46,7 @@ impl<'a> Raytracer<'a> {
                             Raytracer::reflect(camera_ray.direction * -1.0, info.normal)
                                 .normalized(),
                         ),
+                        ao_sampling_point,
                         index + 1,
                     );
                 }
@@ -55,8 +59,11 @@ impl<'a> Raytracer<'a> {
                         if let Some(direction) =
                             Raytracer::refract(camera_ray.direction * -1.0, info.normal, 1.0, 1.5)
                         {
-                            return self
-                                .raytrace(Ray::new(info.point, direction.normalized()), index + 1);
+                            return self.raytrace(
+                                Ray::new(info.point, direction.normalized()),
+                                ao_sampling_point,
+                                index + 1,
+                            );
                         }
 
                         return Vec3::new(0.0, 0.0, 0.0);
@@ -68,8 +75,11 @@ impl<'a> Raytracer<'a> {
                         1.5,
                         1.0,
                     ) {
-                        return self
-                            .raytrace(Ray::new(info.point, direction.normalized()), index + 1);
+                        return self.raytrace(
+                            Ray::new(info.point, direction.normalized()),
+                            ao_sampling_point,
+                            index + 1,
+                        );
                     }
 
                     return Vec3::new(0.0, 0.0, 0.0);
@@ -93,14 +103,22 @@ impl<'a> Raytracer<'a> {
                 Vec3::new(0.0, 0.0, 0.0),
                 &satisfies_guard_sphere,
             );
+
+            let rtao = RTAO::new(100, 10.0);
+
+            let kdao = info.target_sphere.kd * 0.1 * (1.0 - rtao.rtao(self.scene, &info));
+
             match (ray_info, satisfies_guard) {
                 (None, ray_info) | (Some(ray_info), _)
                     if ray_info.target_sphere.material == Material::Glass =>
                 {
                     return info.target_sphere.kd
-                        * self.scene.directional_light.dot(info.normal).max(0.0);
+                        * self.scene.directional_light.dot(info.normal).max(0.0)
+                        + kdao;
                 }
-                _ => (),
+                _ => {
+                    return kdao;
+                }
             }
         }
 
