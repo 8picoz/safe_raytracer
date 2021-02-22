@@ -129,3 +129,7 @@ impl<'a> Raytracer<'a> {
         Some(out_vech + out_vecp)
     }
 }
+
+pub fn gamma(k: f32) -> f32 {
+    k.powf(1.0 / 2.2)
+}
