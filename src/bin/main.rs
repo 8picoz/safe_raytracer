@@ -1,7 +1,6 @@
 extern crate image;
 
 use core::f32;
-use std::io::stdin;
 use std::io::{stdout, Write};
 use std::sync::{Arc, Mutex};
 use std::thread;
@@ -95,10 +94,7 @@ fn raytrace_ao(
                         let raytracer = Raytracer::new(100, &scene);
 
                         raytracer.raytrace(ray, ao_sampling_point, 0)
-                    })
-                    .collect::<Vec<_>>()
-                    .into_iter()
-                    .fold(Vec3::from(0.0), |sum, color| sum + color)
+                    }).fold(Vec3::from(0.0), |sum, color| sum + color)
                     / ssaa_sampling_point as f32;
 
                 let kd = Vec3::new(gamma(kd.x), gamma(kd.y), gamma(kd.z));
