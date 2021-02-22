@@ -13,7 +13,7 @@ use raytracer::vec3::*;
 use raytracer::*;
 
 fn main() {
-    raytrace_ssaa(512, 512, "output.png", 4);
+    raytrace_ssaa(512, 512, "output.png", 16);
 }
 
 fn raytrace_ssaa(width: u32, height: u32, path: &str, sampling_point: u32) {
