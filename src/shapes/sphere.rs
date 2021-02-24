@@ -3,26 +3,32 @@ use crate::material::Material;
 use crate::ray::*;
 use crate::vec3::*;
 
+use super::Shape;
+
 #[derive(Debug)]
 pub struct Sphere {
-    pub point: Vec3f,
+    pub center_position: Vec3f,
     pub radius: f32,
     pub material: Material,
     pub kd: Vec3f,
 }
 
 impl Sphere {
-    pub fn new(point: Vec3f, radius: f32, material: Material, kd: Vec3f) -> Self {
+    pub fn new(center_position: Vec3f, radius: f32, material: Material, kd: Vec3f) -> Self {
         Sphere {
-            point,
+            center_position,
             radius,
             material,
             kd,
         }
     }
+}
 
-    pub fn collision_detect(&self, ray: &Ray) -> Option<IntersectInfo> {
-        let c_to_o = ray.origin - self.point;
+impl Shape for Sphere {
+    type Output = Self;
+
+    fn collision_detect(&self, ray: &Ray) -> Option<IntersectInfo<Self>> {
+        let c_to_o = ray.origin - self.center_position;
         let b = ray.direction.dot(c_to_o);
         let c = c_to_o.sqr_magnitude() - num::pow(self.radius, 2);
         #[allow(non_snake_case)]
@@ -46,8 +52,20 @@ impl Sphere {
         Some(IntersectInfo::new(
             ans,
             hit_position,
-            (hit_position - self.point).normalized(),
+            (hit_position - self.center_position).normalized(),
             self,
         ))
+    }
+
+    fn get_center_potision(&self) -> Vec3f {
+        self.center_position
+    }
+
+    fn get_material(&self) -> Material {
+        self.material
+    }
+
+    fn get_kd(&self) -> Color {
+        self.kd
     }
 }

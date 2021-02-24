@@ -13,21 +13,20 @@ mod tests;
 
 use std::u32;
 
-use intersect_info::IntersectInfo;
 use material::Material;
 use ray::*;
 use rtao::*;
 use scene::*;
-use shapes::sphere::*;
+use shapes::Shape;
 use vec3::*;
 
-pub struct Raytracer<'a> {
+pub struct Raytracer<'a, T: Shape> {
     max_depth: u32,
-    scene: &'a Scene,
+    scene: &'a Scene<T>,
 }
 
-impl<'a> Raytracer<'a> {
-    pub fn new(max_depth: u32, scene: &'a Scene) -> Self {
+impl<'a, T: Shape> Raytracer<'a, T> {
+    pub fn new(max_depth: u32, scene: &'a Scene<T>) -> Self {
         Raytracer { max_depth, scene }
     }
 
@@ -37,12 +36,12 @@ impl<'a> Raytracer<'a> {
         }
 
         if let Some(info) = self.scene.collision_detect(&camera_ray) {
-            match info.target_sphere.material {
+            match info.target.get_material() {
                 Material::Mirror => {
                     return self.raytrace(
                         Ray::new(
                             info.point,
-                            Raytracer::reflect(camera_ray.direction * -1.0, info.normal)
+                            Raytracer::<T>::reflect(camera_ray.direction * -1.0, info.normal)
                                 .normalized(),
                         ),
                         ao_sampling_point,
@@ -56,7 +55,7 @@ impl<'a> Raytracer<'a> {
                         //球体のガラスが内側からか外側からかで屈折率が変化する
                         //他にも法線の向きが逆に
                         if let Some(direction) =
-                            Raytracer::refract(camera_ray.direction * -1.0, info.normal, 1.0, 1.5)
+                            Raytracer::<T>::refract(camera_ray.direction * -1.0, info.normal, 1.0, 1.5)
                         {
                             return self.raytrace(
                                 Ray::new(info.point, direction.normalized()),
@@ -68,7 +67,7 @@ impl<'a> Raytracer<'a> {
                         return Vec3::new(0.0, 0.0, 0.0);
                     }
 
-                    if let Some(direction) = Raytracer::refract(
+                    if let Some(direction) = Raytracer::<T>::refract(
                         camera_ray.direction * -1.0,
                         info.normal * -1.0,
                         1.5,
@@ -89,35 +88,22 @@ impl<'a> Raytracer<'a> {
             let directional_light_ray = Ray::new(info.point, self.scene.directional_light);
             let ray_info = self.scene.collision_detect(&directional_light_ray);
 
-            let satisfies_guard_sphere = Sphere::new(
-                Vec3::new(0.0, 0.0, 0.0),
-                0.0,
-                Material::Glass,
-                Vec3::new(0.0, 0.0, 0.0),
-            );
-
-            let satisfies_guard = IntersectInfo::new(
-                0.0,
-                Vec3::new(0.0, 0.0, 0.0),
-                Vec3::new(0.0, 0.0, 0.0),
-                &satisfies_guard_sphere,
-            );
-
             let rtao = RTAO::new(100, 10.0);
 
-            let kdao = info.target_sphere.kd * 0.1 * (1.0 - rtao.rtao(self.scene, &info));
+            let kdao = info.target.get_kd() * 0.1 * (1.0 - rtao.rtao(self.scene, &info));
 
-            match (ray_info, satisfies_guard) {
-                (None, ray_info) | (Some(ray_info), _)
-                    if ray_info.target_sphere.material == Material::Glass =>
-                {
-                    return info.target_sphere.kd
-                        * self.scene.directional_light.dot(info.normal).max(0.0)
-                        + kdao;
-                }
-                _ => {
+            if let Some(ray_info) = ray_info {
+                if ray_info.target.get_material() == Material::Glass {
+                    return info.target.get_kd()
+                    * self.scene.directional_light.dot(info.normal).max(0.0)
+                    + kdao;
+                } else {
                     return kdao;
                 }
+            } else {
+                return info.target.get_kd()
+                * self.scene.directional_light.dot(info.normal).max(0.0)
+                + kdao;
             }
         }
 

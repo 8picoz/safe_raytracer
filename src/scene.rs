@@ -1,42 +1,42 @@
 use crate::intersect_info::*;
 use crate::ray::*;
-use crate::shapes::sphere::*;
+use crate::shapes::Shape;
 use crate::vec3::Vec3f;
 
-pub struct Scene {
-    spheres: Vec<Sphere>,
+pub struct Scene<T: Shape> {
+    shapes: Vec<T>,
     pub directional_light: Vec3f,
 }
 
-impl Scene {
+impl<T: Shape> Scene<T> {
     pub fn new_without_spheres(directional_light: Vec3f) -> Self {
         Scene {
-            spheres: Vec::new(),
+            shapes: Vec::new(),
             directional_light,
         }
     }
 
-    pub fn new_with_spheres(spheres: Vec<Sphere>, directional_light: Vec3f) -> Self {
+    pub fn new_with_spheres(shapes: Vec<T>, directional_light: Vec3f) -> Self {
         Scene {
-            spheres,
+            shapes,
             directional_light,
         }
     }
 
-    pub fn add_sphere(&mut self, sphere: Sphere) {
-        self.spheres.push(sphere);
+    pub fn add_sphere(&mut self, shape: T) {
+        self.shapes.push(shape);
     }
 
-    pub fn collision_detect(&self, ray: &Ray) -> Option<IntersectInfo> {
+    pub fn collision_detect(&self, ray: &Ray) -> Option<IntersectInfo<T>> {
         let mut infos = Vec::new();
 
-        for sphere in self.spheres.iter() {
-            if let Some(info) = sphere.collision_detect(ray) {
+        for shape in self.shapes.iter() {
+            if let Some(info) = shape.collision_detect(ray) {
                 let info = IntersectInfo::new(
                     info.distance,
                     info.point,
-                    (info.point - sphere.point).normalized(),
-                    sphere,
+                    (info.point - shape.get_center_potision()).normalized(),
+                    shape,
                 );
 
                 infos.push(info);

@@ -26,7 +26,7 @@ fn raytrace_ao(
 ) {
     let image = image::ImageBuffer::new(width, height);
 
-    let mut scene: Scene = Scene::new_without_spheres(Vec3::new(0.5, 1.0, 0.5).normalized());
+    let mut scene = Scene::new_without_spheres(Vec3::new(0.5, 1.0, 0.5).normalized());
 
     scene.add_sphere(Sphere::new(
         Vec3::new(0.0, -1001.0, 0.0),
