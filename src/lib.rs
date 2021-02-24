@@ -11,7 +11,6 @@ pub mod vec3;
 #[cfg(test)]
 mod tests;
 
-use core::ascii;
 use std::u32;
 
 use intersect_info::IntersectInfo;

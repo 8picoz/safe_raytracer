@@ -1,4 +1,3 @@
-use image::GenericImage;
 use rand::thread_rng;
 use rand::Rng;
 
@@ -36,7 +35,11 @@ impl RTAO {
                         v3,
                     ),
                 );
-                scene.collision_detect(&ray).is_some()
+                if let Some(ao_info) = scene.collision_detect(&ray) {
+                    return ao_info.distance < self.max_distance;
+                }
+
+                false
             })
             .count() as f32
             / self.ao_sample as f32
