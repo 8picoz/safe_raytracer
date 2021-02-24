@@ -1,4 +1,4 @@
-use crate::sphere::Sphere;
+use crate::shapes::sphere::*;
 use crate::vec3::*;
 
 #[derive(Debug)]

@@ -9,7 +9,7 @@ use rand::{thread_rng, Rng};
 use raytracer::material::*;
 use raytracer::pinhole_camera::*;
 use raytracer::scene::*;
-use raytracer::sphere::*;
+use raytracer::shapes::sphere::*;
 use raytracer::vec3::*;
 use raytracer::*;
 

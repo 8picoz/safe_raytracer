@@ -5,7 +5,7 @@ pub mod pinhole_camera;
 pub mod ray;
 pub mod rtao;
 pub mod scene;
-pub mod sphere;
+pub mod shapes;
 pub mod vec3;
 
 #[cfg(test)]
@@ -18,7 +18,7 @@ use material::Material;
 use ray::*;
 use rtao::*;
 use scene::*;
-use sphere::Sphere;
+use shapes::sphere::*;
 use vec3::*;
 
 pub struct Raytracer<'a> {
