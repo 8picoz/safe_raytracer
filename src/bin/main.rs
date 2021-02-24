@@ -28,40 +28,40 @@ fn raytrace_ao(
 
     let mut scene = Scene::new_without_spheres(Vec3::new(0.5, 1.0, 0.5).normalized());
 
-    scene.add_sphere(Sphere::new(
+    scene.add_shape(Sphere::new(
         Vec3::new(0.0, -1001.0, 0.0),
         1000.0,
         Material::Diffuce,
         Vec3::new(0.9, 0.9, 0.9),
     ));
 
-    scene.add_sphere(Sphere::new(
+    scene.add_shape(Sphere::new(
         Vec3::new(3.0, 1.0, 2.0),
         1.0,
         Material::Glass,
         Vec3::new(0.0, 0.0, 0.0),
     ));
 
-    scene.add_sphere(Sphere::new(
+    scene.add_shape(Sphere::new(
         Vec3::new(-2.0, 0.0, 1.0),
         1.0,
         Material::Diffuce,
         Vec3::new(0.8, 0.2, 0.2),
     ));
-    scene.add_sphere(Sphere::new(
+    scene.add_shape(Sphere::new(
         Vec3::new(0.0, 0.0, 0.0),
         1.0,
         Material::Diffuce,
         Vec3::new(0.2, 0.8, 0.2),
     ));
-    scene.add_sphere(Sphere::new(
+    scene.add_shape(Sphere::new(
         Vec3::new(2.0, 0.0, -1.0),
         1.0,
         Material::Diffuce,
         Vec3::new(0.2, 0.2, 0.8),
     ));
 
-    scene.add_sphere(Sphere::new(
+    scene.add_shape(Sphere::new(
         Vec3::new(-2.0, 3.0, 1.0),
         1.0,
         Material::Mirror,

@@ -7,10 +7,10 @@ use super::Shape;
 
 #[derive(Debug)]
 pub struct Sphere {
-    pub center_position: Vec3f,
-    pub radius: f32,
-    pub material: Material,
-    pub kd: Vec3f,
+    center_position: Vec3f,
+    radius: f32,
+    material: Material,
+    kd: Vec3f,
 }
 
 impl Sphere {

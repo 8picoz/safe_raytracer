@@ -23,7 +23,7 @@ impl<T: Shape> Scene<T> {
         }
     }
 
-    pub fn add_sphere(&mut self, shape: T) {
+    pub fn add_shape(&mut self, shape: T) {
         self.shapes.push(shape);
     }
 
