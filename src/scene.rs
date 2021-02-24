@@ -31,34 +31,16 @@ impl Scene {
         let mut infos = Vec::new();
 
         for sphere in self.spheres.iter() {
-            let c_to_o = ray.origin - sphere.point;
-            let b = ray.direction.dot(c_to_o);
-            let c = c_to_o.sqr_magnitude() - num::pow(sphere.radius, 2);
-            let D = num::pow(b, 2) - c;
+            if let Some(info) = sphere.collision_detect(ray) {
+                let info = IntersectInfo::new(
+                    info.distance,
+                    info.point,
+                    (info.point - sphere.point).normalized(),
+                    sphere,
+                );
 
-            if D < 0.0 {
-                continue;
+                infos.push(info);
             }
-
-            let mut ans = -b - D.sqrt();
-            if ans < TMIN || TMAX < ans {
-                ans = -b + D.sqrt();
-
-                if ans < TMIN || TMAX < ans {
-                    continue;
-                }
-            }
-
-            let hit_position = ray.point_on_ray(ans);
-
-            let info = IntersectInfo::new(
-                ans,
-                hit_position,
-                (hit_position - sphere.point).normalized(),
-                sphere,
-            );
-
-            infos.push(info);
         }
 
         if infos.is_empty() {

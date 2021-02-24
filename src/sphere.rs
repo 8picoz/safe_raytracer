@@ -21,10 +21,11 @@ impl Sphere {
         }
     }
 
-    pub fn collision_detect(&self, ray: Ray) -> Option<IntersectInfo> {
+    pub fn collision_detect(&self, ray: &Ray) -> Option<IntersectInfo> {
         let c_to_o = ray.origin - self.point;
         let b = ray.direction.dot(c_to_o);
         let c = c_to_o.sqr_magnitude() - num::pow(self.radius, 2);
+        #[allow(non_snake_case)]
         let D = num::pow(b, 2) - c;
 
         if D < 0.0 {

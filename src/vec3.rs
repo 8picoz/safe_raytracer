@@ -19,7 +19,7 @@ impl From<f32> for Vec3<f32> {
 
 impl Vec3<f32> {
     pub fn make_basis(self) -> (Self, Self) {
-        let mut v2;
+        let v2;
 
         if self.y < 0.9 {
             v2 = self.cross(Vec3::new(0.0, 1.0, 0.0)).normalized();
