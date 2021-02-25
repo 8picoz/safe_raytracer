@@ -4,7 +4,6 @@ use rand::Rng;
 use crate::intersect_info::*;
 use crate::ray::*;
 use crate::scene::*;
-use crate::shapes::Shape;
 use crate::vec3::*;
 
 pub struct RTAO {
@@ -20,7 +19,7 @@ impl RTAO {
         }
     }
 
-    pub fn rtao<T: Shape>(&self, scene: &Scene<T>, info: &IntersectInfo<T>) -> f32 {
+    pub fn rtao(&self, scene: &Scene, info: &IntersectInfo) -> f32 {
         let (v2, v3) = info.normal.make_basis();
 
         let mut rng = thread_rng();
