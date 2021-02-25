@@ -1,4 +1,5 @@
 use crate::intersect_info::IntersectInfo;
+use crate::material::Material;
 use crate::ray::*;
 use crate::vec3::*;
 
@@ -50,9 +51,24 @@ impl Shapes {
         }
     }
 
+    // TODO: トレイトとしてまとめる
     pub fn get_center_position(&self) -> Vec3f {
         match self {
             Shapes::Sphere(sphere) => sphere.center_position,
+            _ => Vec3::from(0.0),
+        }
+    }
+
+    pub fn get_material(&self) -> Material {
+        match self {
+            Shapes::Sphere(sphere) => sphere.material,
+            _ => Material::Diffuce,
+        }
+    }
+
+    pub fn get_kd(&self) -> Color {
+        match self {
+            Shapes::Sphere(sphere) => sphere.kd,
             _ => Vec3::from(0.0),
         }
     }
