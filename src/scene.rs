@@ -1,8 +1,8 @@
 use crate::intersect_info::*;
 use crate::ray::*;
-use crate::shapes::Shapes;
 use crate::shapes::rectangle::Rectangle;
 use crate::shapes::sphere::Sphere;
+use crate::shapes::Shapes;
 use crate::vec3::Vec3f;
 
 pub struct Scene {
@@ -32,7 +32,6 @@ impl Scene {
         let mut infos = Vec::new();
 
         for shape in self.shapes.iter() {
-
             if let Some(info) = shape.collision_detect(ray) {
                 let info = IntersectInfo::new(
                     info.distance,

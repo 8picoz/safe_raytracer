@@ -1,8 +1,5 @@
-use crate::intersect_info::*;
 use crate::material::Material;
-use crate::ray::*;
 use crate::vec3::*;
-use super::Shapes;
 
 #[derive(Debug, Clone)]
 pub struct Sphere {
