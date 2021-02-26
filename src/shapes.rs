@@ -46,7 +46,7 @@ impl Shapes {
                     (hit_position - sphere.center_position).normalized(),
                     self,
                 ))
-            },
+            }
             Shapes::Rectangle(rect) => {
                 let o_to_c = rect.get_center_position() - ray.origin;
                 let norm = (rect.ru - rect.lu).cross(rect.ld - rect.lu).normalized();
@@ -64,13 +64,8 @@ impl Shapes {
                     return None;
                 }
 
-                Some(IntersectInfo::new(
-                    ans,
-                    hit_position,
-                    norm,
-                    self,
-                ))
-            },
+                Some(IntersectInfo::new(ans, hit_position, norm, self))
+            }
         }
     }
 

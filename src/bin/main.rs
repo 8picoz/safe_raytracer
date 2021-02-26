@@ -9,8 +9,8 @@ use rand::{thread_rng, Rng};
 use raytracer::material::*;
 use raytracer::pinhole_camera::*;
 use raytracer::scene::*;
-use raytracer::shapes::sphere::*;
 use raytracer::shapes::rectangle::*;
+use raytracer::shapes::sphere::*;
 use raytracer::vec3::*;
 use raytracer::*;
 
@@ -72,10 +72,10 @@ fn raytrace_ao(
     scene.add_rectangle(Rectangle::new(
         Vec3::new(2.0, 6.0, 0.0),
         Vec3::new(2.0, 3.0, -3.0),
-        Vec3::new(-4.0, 3.0,-3.0),
+        Vec3::new(-4.0, 3.0, -3.0),
         Vec3::new(-4.0, 6.0, 0.0),
         Material::Mirror,
-        Vec3::new(1.0, 1.0, 1.0)
+        Vec3::new(1.0, 1.0, 1.0),
     ));
 
     let camera = Arc::new(PinholeCamera::new(

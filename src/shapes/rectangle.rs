@@ -1,5 +1,5 @@
-use crate::ray::TMIN;
 use crate::material::*;
+use crate::ray::TMIN;
 use crate::vec3::*;
 
 #[derive(Debug)]
@@ -22,15 +22,58 @@ impl Rectangle {
     pub fn new(lu: Vec3f, ld: Vec3f, rd: Vec3f, ru: Vec3f, material: Material, kd: Vec3f) -> Self {
         let vertices = vec![lu, ld, rd, ru];
 
-        let x_max = vertices.iter().map(|item| item.x).max_by(|a, b| a.partial_cmp(b).unwrap()).unwrap();
-        let y_max = vertices.iter().map(|item| item.y).max_by(|a, b| a.partial_cmp(b).unwrap()).unwrap();
-        let z_max = vertices.iter().map(|item| item.z).max_by(|a, b| a.partial_cmp(b).unwrap()).unwrap();
+        let x_max = vertices
+            .iter()
+            .map(|item| item.x)
+            .max_by(|a, b| a.partial_cmp(b).unwrap())
+            .unwrap()
+            + TMIN;
+        let y_max = vertices
+            .iter()
+            .map(|item| item.y)
+            .max_by(|a, b| a.partial_cmp(b).unwrap())
+            .unwrap()
+            + TMIN;
+        let z_max = vertices
+            .iter()
+            .map(|item| item.z)
+            .max_by(|a, b| a.partial_cmp(b).unwrap())
+            .unwrap()
+            + TMIN;
 
-        let x_min = vertices.iter().map(|item| item.x).min_by(|a, b| a.partial_cmp(b).unwrap()).unwrap();
-        let y_min = vertices.iter().map(|item| item.y).min_by(|a, b| a.partial_cmp(b).unwrap()).unwrap();
-        let z_min = vertices.iter().map(|item| item.z).min_by(|a, b| a.partial_cmp(b).unwrap()).unwrap();
+        let x_min = vertices
+            .iter()
+            .map(|item| item.x)
+            .min_by(|a, b| a.partial_cmp(b).unwrap())
+            .unwrap()
+            - TMIN;
+        let y_min = vertices
+            .iter()
+            .map(|item| item.y)
+            .min_by(|a, b| a.partial_cmp(b).unwrap())
+            .unwrap()
+            - TMIN;
+        let z_min = vertices
+            .iter()
+            .map(|item| item.z)
+            .min_by(|a, b| a.partial_cmp(b).unwrap())
+            .unwrap()
+            - TMIN;
 
-        Rectangle { lu, ld, rd, ru, material, kd, x_max, y_max, z_max, x_min, y_min, z_min }
+        Rectangle {
+            lu,
+            ld,
+            rd,
+            ru,
+            material,
+            kd,
+            x_max,
+            y_max,
+            z_max,
+            x_min,
+            y_min,
+            z_min,
+        }
     }
 
     pub fn get_center_position(&self) -> Vec3f {
@@ -38,8 +81,8 @@ impl Rectangle {
     }
 
     pub fn point_is_inside(&self, point: Vec3f) -> bool {
-        (self.x_min - TMIN <= point.x && point.x <= self.x_max + TMIN) &&
-        (self.y_min - TMIN <= point.y && point.y <= self.y_max + TMIN) &&
-        (self.z_min - TMIN <= point.z && point.z <= self.z_max + TMIN)
+        (self.x_min <= point.x && point.x <= self.x_max)
+            && (self.y_min <= point.y && point.y <= self.y_max)
+            && (self.z_min <= point.z && point.z <= self.z_max)
     }
 }

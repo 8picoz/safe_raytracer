@@ -53,12 +53,9 @@ impl<'a> Raytracer<'a> {
                     if !is_inside {
                         //球体のガラスが内側からか外側からかで屈折率が変化する
                         //他にも法線の向きが逆に
-                        if let Some(direction) = Raytracer::refract(
-                            camera_ray.direction * -1.0,
-                            info.normal,
-                            1.0,
-                            1.5,
-                        ) {
+                        if let Some(direction) =
+                            Raytracer::refract(camera_ray.direction * -1.0, info.normal, 1.0, 1.5)
+                        {
                             return self.raytrace(
                                 Ray::new(info.point, direction.normalized()),
                                 ao_sampling_point,
@@ -103,7 +100,8 @@ impl<'a> Raytracer<'a> {
                     return kdao;
                 }
             } else {
-                return info.target.get_kd() * self.scene.directional_light.dot(info.normal).max(0.0)
+                return info.target.get_kd()
+                    * self.scene.directional_light.dot(info.normal).max(0.0)
                     + kdao;
             }
         }
