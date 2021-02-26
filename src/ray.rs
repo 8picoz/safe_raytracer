@@ -1,4 +1,4 @@
-use crate::vec3::*;
+use crate::vec3::Vec3f;
 
 pub const TMIN: f32 = 1e-3;
 pub const TMAX: f32 = 10000.0;

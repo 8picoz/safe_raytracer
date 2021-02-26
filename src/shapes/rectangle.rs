@@ -1,6 +1,6 @@
-use crate::material::*;
+use crate::material::Material;
 use crate::ray::TMIN;
-use crate::vec3::*;
+use crate::vec3::Vec3f;
 
 #[derive(Debug)]
 pub struct Rectangle {

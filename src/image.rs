@@ -5,7 +5,7 @@ use std::io::BufWriter;
 
 use num::clamp;
 
-use crate::vec3::*;
+use crate::vec3::Vec3f;
 
 pub struct Image {
     width: usize,

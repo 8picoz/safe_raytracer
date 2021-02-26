@@ -1,10 +1,10 @@
 use rand::thread_rng;
 use rand::Rng;
 
-use crate::intersect_info::*;
-use crate::ray::*;
-use crate::scene::*;
-use crate::vec3::*;
+use crate::intersect_info::IntersectInfo;
+use crate::ray::Ray;
+use crate::scene::Scene;
+use crate::vec3::{Vec3, Vec3f};
 
 pub struct RTAO {
     ao_sample: u32,

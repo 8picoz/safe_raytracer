@@ -1,5 +1,5 @@
 use crate::shapes::Shapes;
-use crate::vec3::*;
+use crate::vec3::Vec3f;
 
 pub struct IntersectInfo<'a> {
     pub distance: f32,

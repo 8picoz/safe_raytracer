@@ -6,19 +6,19 @@ use std::sync::{Arc, Mutex};
 use std::thread;
 
 use rand::{thread_rng, Rng};
-use raytracer::material::*;
-use raytracer::pinhole_camera::*;
-use raytracer::scene::*;
-use raytracer::shapes::rectangle::*;
-use raytracer::shapes::sphere::*;
-use raytracer::vec3::*;
+use raytracer::material::Material;
+use raytracer::pinhole_camera::PinholeCamera;
+use raytracer::scene::Scene;
+use raytracer::shapes::rectangle::Rectangle;
+use raytracer::shapes::sphere::Sphere;
+use raytracer::vec3::{Vec3, Color};
 use raytracer::*;
 
 fn main() {
-    raytrace_ao(512, 512, "output.png", 16, 100);
+    raytrace(512, 512, "output.png", 16, 100);
 }
 
-fn raytrace_ao(
+fn raytrace(
     width: u32,
     height: u32,
     path: &str,

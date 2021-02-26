@@ -1,5 +1,5 @@
-use crate::intersect_info::*;
-use crate::ray::*;
+use crate::intersect_info::IntersectInfo;
+use crate::ray::Ray;
 use crate::shapes::rectangle::Rectangle;
 use crate::shapes::sphere::Sphere;
 use crate::shapes::Shapes;

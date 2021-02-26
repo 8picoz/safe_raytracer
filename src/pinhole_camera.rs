@@ -1,5 +1,5 @@
-use crate::ray::*;
-use crate::vec3::*;
+use crate::ray::Ray;
+use crate::vec3::Vec3f;
 
 pub struct PinholeCamera {
     position: Vec3f,

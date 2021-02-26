@@ -14,10 +14,10 @@ mod tests;
 use std::u32;
 
 use material::Material;
-use ray::*;
-use rtao::*;
-use scene::*;
-use vec3::*;
+use ray::Ray;
+use rtao::RTAO;
+use scene::Scene;
+use vec3::{Vec3, Vec3f, Color};
 
 pub struct Raytracer<'a> {
     max_depth: u32,

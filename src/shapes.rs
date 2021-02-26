@@ -1,7 +1,7 @@
 use crate::intersect_info::IntersectInfo;
 use crate::material::Material;
-use crate::ray::*;
-use crate::vec3::*;
+use crate::ray::{Ray, TMIN, TMAX};
+use crate::vec3::{Vec3f, Color};
 
 use self::sphere::Sphere;
 pub mod sphere;
