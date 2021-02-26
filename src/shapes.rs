@@ -46,8 +46,31 @@ impl Shapes {
                     (hit_position - sphere.center_position).normalized(),
                     self,
                 ))
-            }
-            _ => None,
+            },
+            Shapes::Rectangle(rect) => {
+                let o_to_c = rect.get_center_position() - ray.origin;
+                let norm = (rect.ru - rect.lu).cross(rect.ld - rect.lu).normalized();
+                let d_n = ray.direction.dot(norm);
+
+                let ans = o_to_c.dot(norm) / d_n;
+
+                if ans < TMIN || TMAX < ans || !ans.is_finite() {
+                    return None;
+                }
+
+                let hit_position = ray.point_on_ray(ans);
+
+                if !rect.point_is_inside(hit_position) {
+                    return None;
+                }
+
+                Some(IntersectInfo::new(
+                    ans,
+                    hit_position,
+                    norm,
+                    self,
+                ))
+            },
         }
     }
 
@@ -55,21 +78,21 @@ impl Shapes {
     pub fn get_center_position(&self) -> Vec3f {
         match self {
             Shapes::Sphere(sphere) => sphere.center_position,
-            _ => Vec3::from(0.0),
+            Shapes::Rectangle(rect) => rect.get_center_position(),
         }
     }
 
     pub fn get_material(&self) -> Material {
         match self {
             Shapes::Sphere(sphere) => sphere.material,
-            _ => Material::Diffuce,
+            Shapes::Rectangle(rect) => rect.material,
         }
     }
 
     pub fn get_kd(&self) -> Color {
         match self {
             Shapes::Sphere(sphere) => sphere.kd,
-            _ => Vec3::from(0.0),
+            Shapes::Rectangle(rect) => rect.kd,
         }
     }
 }

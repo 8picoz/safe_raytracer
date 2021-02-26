@@ -17,7 +17,6 @@ use material::Material;
 use ray::*;
 use rtao::*;
 use scene::*;
-use shapes::Shapes;
 use vec3::*;
 
 pub struct Raytracer<'a> {
@@ -108,7 +107,7 @@ impl<'a> Raytracer<'a> {
                     + kdao;
             }
         }
-        
+
         Vec3::new(0.0, 0.0, 0.0)
     }
 

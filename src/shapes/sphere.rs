@@ -1,7 +1,7 @@
 use crate::material::Material;
 use crate::vec3::*;
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct Sphere {
     pub center_position: Vec3f,
     pub radius: f32,

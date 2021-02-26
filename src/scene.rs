@@ -33,13 +33,6 @@ impl Scene {
 
         for shape in self.shapes.iter() {
             if let Some(info) = shape.collision_detect(ray) {
-                let info = IntersectInfo::new(
-                    info.distance,
-                    info.point,
-                    (info.point - shape.get_center_position()).normalized(),
-                    shape,
-                );
-
                 infos.push(info);
             }
         }
