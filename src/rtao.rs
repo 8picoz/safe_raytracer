@@ -44,7 +44,7 @@ impl RTAO {
                     }
                 }
 
-                1.0 * info.normal.dot(ray.direction) / (info.normal.magnitude() * ray.direction.magnitude())
+                1.0 * info.normal.dot(ray.direction)
             }).sum::<f32>() * ((2.0 * self.rho) / self.ao_sample as f32)
             
     }
