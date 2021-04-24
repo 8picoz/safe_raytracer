@@ -10,15 +10,15 @@ use crate::vec3::{Vec3, Vec3f};
 pub struct RTAO {
     ao_sample: u32,
     max_distance: f32,
-    row: f32,
+    rho: f32,
 }
 
 impl RTAO {
-    pub fn new(ao_sample: u32, max_distance: f32, row: f32) -> Self {
+    pub fn new(ao_sample: u32, max_distance: f32, rho: f32) -> Self {
         RTAO {
             ao_sample,
             max_distance,
-            row,
+            rho,
         }
     }
 
@@ -45,7 +45,7 @@ impl RTAO {
                 }
 
                 1.0 * info.normal.dot(ray.direction) / (info.normal.magnitude() * ray.direction.magnitude())
-            }).sum::<f32>() * ((2.0 * self.row) / self.ao_sample as f32)
+            }).sum::<f32>() * ((2.0 * self.rho) / self.ao_sample as f32)
             
     }
 
