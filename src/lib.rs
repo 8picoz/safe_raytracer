@@ -87,7 +87,7 @@ impl<'a> Raytracer<'a> {
             let directional_light_ray = Ray::new(info.point, self.scene.directional_light);
             let ray_info = self.scene.collision_detect(&directional_light_ray);
 
-            let rtao = RTAO::new(100, 10.0);
+            let rtao = RTAO::new(100, 10.0, 1.0);
 
             let kdao = info.target.get_kd() * 0.1 * (1.0 - rtao.rtao(self.scene, &info));
 

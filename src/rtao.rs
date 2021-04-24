@@ -6,16 +6,19 @@ use crate::ray::Ray;
 use crate::scene::Scene;
 use crate::vec3::{Vec3, Vec3f};
 
+//#[allow()]
 pub struct RTAO {
     ao_sample: u32,
     max_distance: f32,
+    row: f32,
 }
 
 impl RTAO {
-    pub fn new(ao_sample: u32, max_distance: f32) -> Self {
+    pub fn new(ao_sample: u32, max_distance: f32, row: f32) -> Self {
         RTAO {
             ao_sample,
             max_distance,
+            row,
         }
     }
 
@@ -25,7 +28,7 @@ impl RTAO {
         let mut rng = thread_rng();
 
         (0..self.ao_sample)
-            .filter(|_| {
+            .map(|_| {
                 let ray = Ray::new(
                     info.point,
                     RTAO::local_to_world(
@@ -36,13 +39,14 @@ impl RTAO {
                     ),
                 );
                 if let Some(ao_info) = scene.collision_detect(&ray) {
-                    return ao_info.distance < self.max_distance;
+                    if ao_info.distance < self.max_distance {
+                        return 0.0;
+                    }
                 }
 
-                false
-            })
-            .count() as f32
-            / self.ao_sample as f32
+                1.0 * info.normal.dot(ray.direction) / (info.normal.magnitude() * ray.direction.magnitude())
+            }).sum::<f32>() * ((2.0 * self.row) / self.ao_sample as f32)
+            
     }
 
     fn make_ray_direction(u: f32, v: f32) -> Vec3f {
