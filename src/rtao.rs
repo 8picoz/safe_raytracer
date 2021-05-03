@@ -6,7 +6,7 @@ use crate::ray::Ray;
 use crate::scene::Scene;
 use crate::vec3::{Vec3, Vec3f};
 
-//#[allow()]
+#[allow(clippy::upper_case_acronyms)]
 pub struct RTAO {
     ao_sample: u32,
     max_distance: f32,
