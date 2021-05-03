@@ -9,7 +9,6 @@ use rand::{thread_rng, Rng};
 use raytracer::material::Material;
 use raytracer::pinhole_camera::PinholeCamera;
 use raytracer::scene::Scene;
-use raytracer::shapes::rectangle::Rectangle;
 use raytracer::shapes::sphere::Sphere;
 use raytracer::vec3::{Vec3, Color};
 use raytracer::*;
@@ -23,7 +22,7 @@ fn raytrace(
     height: u32,
     path: &str,
     ssaa_sampling_point: u32,
-    ao_sampling_point: u32,
+    sample: u32,
 ) {
     let image = image::ImageBuffer::new(width, height);
 
@@ -34,13 +33,6 @@ fn raytrace(
         1000.0,
         Material::Diffuce,
         Vec3::new(0.9, 0.9, 0.9),
-    ));
-
-    scene.add_sphere(Sphere::new(
-        Vec3::new(3.0, 1.0, 2.0),
-        1.0,
-        Material::Glass,
-        Vec3::new(0.0, 0.0, 0.0),
     ));
 
     scene.add_sphere(Sphere::new(
@@ -60,22 +52,6 @@ fn raytrace(
         1.0,
         Material::Diffuce,
         Vec3::new(0.2, 0.2, 0.8),
-    ));
-
-    scene.add_sphere(Sphere::new(
-        Vec3::new(-2.0, 3.0, 1.0),
-        1.0,
-        Material::Mirror,
-        Vec3::new(1.0, 1.0, 1.0),
-    ));
-
-    scene.add_rectangle(Rectangle::new(
-        Vec3::new(2.0, 6.0, 0.0),
-        Vec3::new(2.0, 3.0, -3.0),
-        Vec3::new(-4.0, 3.0, -3.0),
-        Vec3::new(-4.0, 6.0, 0.0),
-        Material::Mirror,
-        Vec3::new(1.0, 1.0, 1.0),
     ));
 
     let camera = Arc::new(PinholeCamera::new(
@@ -102,9 +78,9 @@ fn raytrace(
                                 / height as f32;
 
                             let ray = camera.make_ray_to_pinhole(u, v);
-                            let raytracer = Raytracer::new(100, &scene);
+                            let raytracer = Raytracer::new(100, &scene, 0.9);
 
-                            raytracer.raytrace(ray, ao_sampling_point, 0)
+                            raytracer.pathtrace(ray, 0, 0.99, sample)
                         })
                         .fold(Vec3::from(0.0), |sum, color| sum + color)
                         / ssaa_sampling_point as f32;
