@@ -45,8 +45,9 @@ impl RTAO {
                 }
 
                 1.0 * info.normal.dot(ray.direction)
-            }).sum::<f32>() * ((2.0 * self.rho) / self.ao_sample as f32)
-            
+            })
+            .sum::<f32>()
+            * ((2.0 * self.rho) / self.ao_sample as f32)
     }
 
     fn make_ray_direction(u: f32, v: f32) -> Vec3f {

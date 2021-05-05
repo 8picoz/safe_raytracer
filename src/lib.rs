@@ -19,11 +19,11 @@ use material::Material;
 use num::abs;
 use rand::prelude::ThreadRng;
 use rand::thread_rng;
+use rand::Rng;
 use ray::Ray;
 use rtao::RTAO;
 use scene::Scene;
-use vec3::{Vec3, Vec3f, Color};
-use rand::Rng;
+use vec3::{Color, Vec3, Vec3f};
 
 pub struct Raytracer<'a> {
     max_depth: u32,
@@ -33,7 +33,11 @@ pub struct Raytracer<'a> {
 
 impl<'a> Raytracer<'a> {
     pub fn new(max_depth: u32, scene: &'a Scene, rho: f32) -> Self {
-        Raytracer { max_depth, scene, rho }
+        Raytracer {
+            max_depth,
+            scene,
+            rho,
+        }
     }
 
     pub fn raytrace(&self, camera_ray: Ray, ao_sampling_point: u32, index: u32) -> Color {
@@ -110,7 +114,7 @@ impl<'a> Raytracer<'a> {
                 return info.target.get_kd()
                     * self.scene.directional_light.dot(info.normal).max(0.0)
                     + kdao;
-            } 
+            }
         }
 
         //空
@@ -118,7 +122,6 @@ impl<'a> Raytracer<'a> {
     }
 
     pub fn pathtrace(&self, ray: Ray, index: u32, p: f32, sample: u32) -> Color {
-        
         let mut result: Vec3f = Vec3f::from(0.0);
         let mut rng = thread_rng();
         for _ in 0..sample {
@@ -128,7 +131,7 @@ impl<'a> Raytracer<'a> {
         result / sample as f32
     }
 
-    fn trace(&self, ray: Ray, index: u32, p: f32, rng: &mut ThreadRng, throughput: Vec3f) -> Color  {
+    fn trace(&self, ray: Ray, index: u32, p: f32, rng: &mut ThreadRng, throughput: Vec3f) -> Color {
         let brdf = self.rho / PI;
         let pdf = 1. / (2. * PI);
 
@@ -142,14 +145,14 @@ impl<'a> Raytracer<'a> {
         let throughput = throughput / p;
 
         if let Some(info) = self.scene.collision_detect(&ray) {
-
             let (v2, v3) = info.normal.make_basis();
 
             let direction = Raytracer::local_to_world(
-                    Raytracer::make_ray_direction(rng.gen_range(0.0..1.0), rng.gen_range(0.0..1.0)),
-                    v2, 
-                    info.normal, 
-                    v3);
+                Raytracer::make_ray_direction(rng.gen_range(0.0..1.0), rng.gen_range(0.0..1.0)),
+                v2,
+                info.normal,
+                v3,
+            );
 
             let cos = abs(direction.dot(info.normal));
 
@@ -160,7 +163,7 @@ impl<'a> Raytracer<'a> {
                 index + 1,
                 p,
                 rng,
-                throughput
+                throughput,
             );
         }
 
