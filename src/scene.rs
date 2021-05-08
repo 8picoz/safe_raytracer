@@ -3,8 +3,8 @@ use crate::ray::Ray;
 use crate::shapes::obj::Obj;
 use crate::shapes::rectangle::Rectangle;
 use crate::shapes::sphere::Sphere;
-use crate::shapes::Shapes;
 use crate::shapes::triangle::Triangle;
+use crate::shapes::Shapes;
 use crate::vec3::Vec3f;
 
 pub struct Scene {
@@ -36,7 +36,9 @@ impl Scene {
     }
 
     pub fn add_obj(&mut self, obj: Obj) {
-        self.shapes.push(Shapes::Obj(obj))
+        for shape in obj.triangles {
+            self.shapes.push(shape);
+        }
     }
 
     pub fn collision_detect(&self, ray: &Ray) -> Option<IntersectInfo> {

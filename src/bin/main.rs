@@ -12,7 +12,6 @@ use raytracer::pinhole_camera::PinholeCamera;
 use raytracer::scene::Scene;
 use raytracer::shapes::obj::Obj;
 use raytracer::shapes::sphere::Sphere;
-use raytracer::shapes::triangle::Triangle;
 use raytracer::vec3::{Color, Vec3};
 use raytracer::*;
 
@@ -26,24 +25,31 @@ fn raytrace(width: u32, height: u32, path: &str, ssaa_sampling_point: u32, sampl
 
     let mut scene = Scene::new(Vec3::new(0.5, 1.0, 0.5).normalized());
 
-/*     scene.add_obj(Obj::new(
-        "./models/bunny.obj",
-        Vec3::new(0.0, 0.0, 0.0),
+     scene.add_obj(Obj::new(
+        "./models/cube.obj",
+        Vec3::new(2.0, -0.4, 3.0),
         Material::Diffuce,
-        Vec3::new(0.9, 0.9, 0.9),
-    )); */
+        Vec3::from(0.9),
+    ));
 
+    //立方体
+/*
+    scene.add_triangle(Triangle::new(Vec3::new(1.5, 0.1, 2.5), Vec3::new(1.5, 0.1, 3.5), Vec3::new(2.5, 0.1, 3.5), Material::Diffuce, Vec3::from(0.9)));
+    scene.add_triangle(Triangle::new(Vec3::new(1.5, 0.1, 2.5), Vec3::new(2.5, 0.1, 3.5), Vec3::new(2.5, 0.1, 2.5), Material::Diffuce, Vec3::from(0.9)));
+    scene.add_triangle(Triangle::new(Vec3::new(1.5, 0.1, 2.5), Vec3::new(1.5, -1.1, 2.5), Vec3::new(1.5, -1.1, 3.5), Material::Diffuce, Vec3::from(0.9)));
+    scene.add_triangle(Triangle::new(Vec3::new(1.5, 0.1, 2.5), Vec3::new(1.5, -1.1, 3.5), Vec3::new(1.5, 0.1, 2.5), Material::Diffuce, Vec3::from(0.9)));
+    scene.add_triangle(Triangle::new(Vec3::new(2.5, 0.1, 3.5), Vec3::new(2.5, -1.1, 3.5), Vec3::new(2.5, -1.1, 2.5), Material::Diffuce, Vec3::from(0.9)));
+    scene.add_triangle(Triangle::new(Vec3::new(2.5, 0.1, 3.5), Vec3::new(2.5, -1.1, 2.5), Vec3::new(2.5, 0.1, 2.5), Material::Diffuce, Vec3::from(0.9)));
+    scene.add_triangle(Triangle::new(Vec3::new(2.5, 0.1, 2.5), Vec3::new(2.5, -1.1, 2.5), Vec3::new(1.5, -1.1, 2.5), Material::Diffuce, Vec3::from(0.9)));
+    scene.add_triangle(Triangle::new(Vec3::new(2.5, 0.1, 2.5), Vec3::new(1.5, -1.1, 2.5), Vec3::new(1.5, 0.1, 2.5), Material::Diffuce, Vec3::from(0.9)));
+    scene.add_triangle(Triangle::new(Vec3::new(1.5, 0.1, 3.5), Vec3::new(1.5, -1.1, 3.5), Vec3::new(2.5, -1.1, 3.5), Material::Diffuce, Vec3::from(0.9)));
+    scene.add_triangle(Triangle::new(Vec3::new(1.5, 0.1, 3.5), Vec3::new(2.5, -1.1, 3.5), Vec3::new(2.5, 0.1, 3.5), Material::Diffuce, Vec3::from(0.9)));
+    scene.add_triangle(Triangle::new(Vec3::new(1.5, -1.1, 3.5), Vec3::new(1.5, -1.1, 2.5), Vec3::new(2.5, -1.1, 2.5), Material::Diffuce, Vec3::from(0.9)));
+    scene.add_triangle(Triangle::new(Vec3::new(1.5, -1.1, 3.5), Vec3::new(2.5, -1.1, 2.5), Vec3::new(2.5, -1.1, 3.5), Material::Diffuce, Vec3::from(0.9)));
+ */
     scene.add_sphere(Sphere::new(
         Vec3::new(0.0, -1001.0, 0.0),
         1000.0,
-        Material::Diffuce,
-        Vec3::new(0.9, 0.9, 0.9),
-    ));
-
-    scene.add_triangle(Triangle::new(
-        Vec3::new(0., 1., 0.),
-        Vec3::new(-1., 0., 0.),
-        Vec3::new(1., 0., 0.),
         Material::Diffuce,
         Vec3::new(0.9, 0.9, 0.9),
     ));
@@ -109,6 +115,7 @@ fn raytrace(width: u32, height: u32, path: &str, ssaa_sampling_point: u32, sampl
     image.save(path).unwrap();
 }
 
+#[allow(dead_code)]
 fn raytrace_with_hard(width: u32, height: u32, path: &str, ssaa_sampling_point: u32, sample: u32) {
     let image = image::ImageBuffer::new(width, height);
 

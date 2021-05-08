@@ -13,10 +13,10 @@ mod tests;
 
 use core::f32;
 use std::f32::consts::PI;
+use std::rc::Rc;
 use std::u32;
 
 use material::Material;
-use num::abs;
 use rand::prelude::ThreadRng;
 use rand::thread_rng;
 use rand::Rng;
@@ -124,6 +124,7 @@ impl<'a> Raytracer<'a> {
     pub fn pathtrace(&self, ray: Ray, index: u32, p: f32, sample: u32) -> Color {
         let mut result: Vec3f = Vec3f::from(0.0);
         let mut rng = thread_rng();
+        let ray = Rc::new(ray);
         for _ in 0..sample {
             result = result + self.trace(ray.clone(), index, p, &mut rng, Vec3f::from(1.0));
         }
@@ -131,35 +132,45 @@ impl<'a> Raytracer<'a> {
         result / sample as f32
     }
 
-    fn trace(&self, ray: Ray, index: u32, p: f32, rng: &mut ThreadRng, throughput: Vec3f) -> Color {
+    fn trace(&self, ray: Rc<Ray>, index: u32, p: f32, rng: &mut ThreadRng, throughput: Vec3f) -> Color {
         let brdf = self.rho / PI;
         let pdf = 1. / (2. * PI);
 
         if self.max_depth <= index {
-            return throughput;
+            return Vec3::from(0.0);
         }
 
         if russian_roulette(p, rng) {
-            return throughput;
+            return Vec3::from(0.0);
         }
         let throughput = throughput / p;
 
         if let Some(info) = self.scene.collision_detect(&ray) {
-            let (v2, v3) = info.normal.make_basis();
+
+            let normal = info.normal;
+
+            /* 
+            let mut normal = info.normal;
+            if ray.direction.dot(info.normal) < 0.0 {
+                normal = info.normal * -1.0;
+            } 
+            */
+
+            let (v2, v3) = normal.make_basis();
 
             let direction = Raytracer::local_to_world(
                 Raytracer::make_ray_direction(rng.gen_range(0.0..1.0), rng.gen_range(0.0..1.0)),
                 v2,
-                info.normal,
+                normal,
                 v3,
             );
 
-            let cos = abs(direction.dot(info.normal));
+            let cos = direction.dot(normal).max(0.0);
 
             let throughput = throughput * (brdf * cos / pdf);
 
             return self.trace(
-                Ray::new(info.point, direction),
+                Rc::new(Ray::new(info.point, direction)),
                 index + 1,
                 p,
                 rng,

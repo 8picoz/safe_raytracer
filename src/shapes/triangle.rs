@@ -13,7 +13,14 @@ pub struct Triangle {
 
 impl Triangle {
     pub fn new(v0: Vec3f, v1: Vec3f, v2: Vec3f, material: Material, kd: Vec3f) -> Self {
-        Triangle { v0, v1, v2, material, kd, center_position: None }
+        Triangle {
+            v0,
+            v1,
+            v2,
+            material,
+            kd,
+            center_position: None,
+        }
     }
 
     pub fn get_center_position(&mut self) -> Vec3f {

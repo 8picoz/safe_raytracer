@@ -16,6 +16,7 @@ use self::obj::Obj;
 pub mod obj;
 
 //できるだけ動的ディスパッチをしないようにするため
+#[derive(Debug)]
 pub enum Shapes {
     Sphere(Sphere),
     Triangle(Triangle),
@@ -23,7 +24,7 @@ pub enum Shapes {
     Obj(Obj),
 }
 
-const K_EPSILON: f32 = 1e-6;
+const K_EPSILON: f32 = 1e-8;
 
 impl Shapes {
     //collisiotn_detectはそれぞれが持つべき(?)
@@ -59,40 +60,46 @@ impl Shapes {
                 ))
             }
             Shapes::Triangle(triangle) => {
-                let e2 = triangle.v2 - triangle.v0;
-                let alpha = ray.direction.cross(e2);
                 let e1 = triangle.v1 - triangle.v0;
-                let det = alpha.dot(e1);
-                
-                if det < K_EPSILON && -K_EPSILON < det {
+                let e2 = triangle.v2 - triangle.v0;
+
+                let alpha = ray.direction.cross(e2);
+
+                let det = e1.dot(alpha);
+                if -K_EPSILON < det && det < K_EPSILON {
                     return None;
                 }
 
-                let inv_det = 1. / det;
+                let inv_det = 1.0 / det;
                 let r = ray.origin - triangle.v0;
-                
-                let u = inv_det * alpha.dot(r);
-                if !(0. ..=1.).contains(&u) {
+
+                let u = alpha.dot(r) * inv_det;
+                if !(0.0 ..=1.0).contains(&u) {
                     return None;
                 }
 
                 let beta = r.cross(e1);
 
-                let v = inv_det * ray.direction.dot(beta);
-                if v < 0. || u + v > 1. {
+                let v = ray.direction.dot(beta) * inv_det;
+                if v < 0.0 || u + v > 1.0 {
                     return None;
                 }
 
-                let ans = inv_det * beta.dot(e2);
-
-                if ans < 0. || ans < TMIN || ans > TMAX {
+                let ans = e2.dot(beta) * inv_det;
+                if !(TMIN..=TMAX).contains(&ans) {
                     return None;
                 }
 
                 let hit_position = ray.point_on_ray(ans);
 
-                Some(IntersectInfo::new(ans, hit_position, (triangle.v0.cross(triangle.v1)).normalized(), self))
+                Some(IntersectInfo::new(
+                    ans,
+                    hit_position,
+                    (e1.cross(e2)).normalized(),
+                    self,
+                ))
             }
+            //TODO: Reactangleの削除
             Shapes::Rectangle(rect) => {
                 let o_to_c = rect.get_center_position() - ray.origin;
                 let norm = (rect.ru - rect.lu).cross(rect.ld - rect.lu).normalized();
@@ -112,8 +119,8 @@ impl Shapes {
 
                 Some(IntersectInfo::new(ans, hit_position, norm, self))
             }
-            Shapes::Obj(obj) => {
-                //BVH
+            Shapes::Obj(_) => {
+                //TODO: BVH
                 None
             }
         }

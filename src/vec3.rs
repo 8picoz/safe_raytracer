@@ -1,4 +1,5 @@
 use num::Float;
+use num::abs;
 use std::ops;
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -21,7 +22,7 @@ impl Vec3<f32> {
     pub fn make_basis(self) -> (Self, Self) {
         let v2;
 
-        if self.y < 0.9 {
+        if abs(self.y) < 0.9 {
             v2 = self.cross(Vec3::new(0.0, 1.0, 0.0)).normalized();
         } else {
             v2 = self.cross(Vec3::new(0.0, 0.0, -1.0)).normalized();
