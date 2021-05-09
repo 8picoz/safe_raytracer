@@ -9,9 +9,6 @@ pub mod sphere;
 use self::triangle::Triangle;
 pub mod triangle;
 
-use self::rectangle::Rectangle;
-pub mod rectangle;
-
 use self::obj::Obj;
 pub mod obj;
 
@@ -20,7 +17,6 @@ pub mod obj;
 pub enum Shapes {
     Sphere(Sphere),
     Triangle(Triangle),
-    Rectangle(Rectangle),
     Obj(Obj),
 }
 
@@ -99,26 +95,6 @@ impl Shapes {
                     self,
                 ))
             }
-            //TODO: Reactangleの削除
-            Shapes::Rectangle(rect) => {
-                let o_to_c = rect.get_center_position() - ray.origin;
-                let norm = (rect.ru - rect.lu).cross(rect.ld - rect.lu).normalized();
-                let d_n = ray.direction.dot(norm);
-
-                let ans = o_to_c.dot(norm) / d_n;
-
-                if ans < TMIN || TMAX < ans || !ans.is_finite() {
-                    return None;
-                }
-
-                let hit_position = ray.point_on_ray(ans);
-
-                if !rect.point_is_inside(hit_position) {
-                    return None;
-                }
-
-                Some(IntersectInfo::new(ans, hit_position, norm, self))
-            }
             Shapes::Obj(_) => {
                 //TODO: BVH
                 None
@@ -132,7 +108,6 @@ impl Shapes {
         match self {
             Shapes::Sphere(sphere) => sphere.center_position,
             Shapes::Triangle(triangle) => triangle.get_center_position(),
-            Shapes::Rectangle(rect) => rect.get_center_position(),
             Shapes::Obj(obj) => obj.center_position,
         }
     }
@@ -141,7 +116,6 @@ impl Shapes {
         match self {
             Shapes::Sphere(sphere) => sphere.material,
             Shapes::Triangle(triangle) => triangle.material,
-            Shapes::Rectangle(rect) => rect.material,
             Shapes::Obj(obj) => obj.material,
         }
     }
@@ -150,7 +124,6 @@ impl Shapes {
         match self {
             Shapes::Sphere(sphere) => sphere.kd,
             Shapes::Triangle(triangle) => triangle.kd,
-            Shapes::Rectangle(rect) => rect.kd,
             Shapes::Obj(obj) => obj.kd,
         }
     }

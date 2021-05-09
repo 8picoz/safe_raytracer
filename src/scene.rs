@@ -1,7 +1,6 @@
 use crate::intersect_info::IntersectInfo;
 use crate::ray::Ray;
 use crate::shapes::obj::Obj;
-use crate::shapes::rectangle::Rectangle;
 use crate::shapes::sphere::Sphere;
 use crate::shapes::triangle::Triangle;
 use crate::shapes::Shapes;
@@ -29,10 +28,6 @@ impl Scene {
 
     pub fn add_triangle(&mut self, triangle: Triangle) {
         self.shapes.push(Shapes::Triangle(triangle))
-    }
-
-    pub fn add_rectangle(&mut self, rect: Rectangle) {
-        self.shapes.push(Shapes::Rectangle(rect));
     }
 
     pub fn add_obj(&mut self, obj: Obj) {
