@@ -133,41 +133,42 @@ impl<'a> Raytracer<'a> {
     }
 
     fn trace(&self, ray: Rc<Ray>, index: u32, p: f32, rng: &mut ThreadRng, throughput: Vec3f) -> Color {
-        let brdf = self.rho / PI;
-        let pdf = 1. / (2. * PI);
-
         if self.max_depth <= index {
             return Vec3::from(0.0);
         }
-
+        
         if russian_roulette(p, rng) {
             return Vec3::from(0.0);
         }
+
         let throughput = throughput / p;
-
+    
         if let Some(info) = self.scene.collision_detect(&ray) {
-
             let normal = info.normal;
-
-            /* 
-            let mut normal = info.normal;
-            if ray.direction.dot(info.normal) < 0.0 {
-                normal = info.normal * -1.0;
-            } 
-            */
-
+            
             let (v2, v3) = normal.make_basis();
-
+            
             let direction = Raytracer::local_to_world(
-                Raytracer::make_ray_direction(rng.gen_range(0.0..1.0), rng.gen_range(0.0..1.0)),
+                Raytracer::make_ray_direction_with_important_sampling(rng.gen_range(0.0..1.0), rng.gen_range(0.0..1.0)),
+                //Raytracer::make_ray_direction(rng.gen_range(0.0..1.0), rng.gen_range(0.0..1.0)),
                 v2,
                 normal,
                 v3,
             );
-
+            
+            //without important sampling
+            /*
+            let brdf = self.rho / PI;
             let cos = direction.dot(normal).max(0.0);
+            let pdf = 1. / (2. * PI);
 
             let throughput = throughput * (brdf * cos / pdf);
+            */
+
+            //with important sampling
+            let brdf = self.rho;            
+
+            let throughput = throughput * brdf;
 
             return self.trace(
                 Rc::new(Ray::new(info.point, direction)),
@@ -203,11 +204,19 @@ impl<'a> Raytracer<'a> {
         Some(out_vech + out_vecp)
     }
 
+    #[allow(dead_code)]
     fn make_ray_direction(u: f32, v: f32) -> Vec3f {
         let theta = (1.0 - u).acos();
-        let phi = 2.0 * std::f32::consts::PI * v;
+        let phi = 2.0 * PI * v;
 
-        Vec3::new(phi.cos() * theta.sin(), 1.0 - u, phi.sin() * theta.sin())
+        Vec3::new(phi.cos() * theta.sin(), theta.cos(), phi.sin() * theta.sin())
+    }
+
+    fn make_ray_direction_with_important_sampling(u: f32, v: f32) -> Vec3f {
+        let theta = (1. / 2.) * (1. - 2. * u).clamp(-1.0, 1.0).acos();
+        let phi = 2.0 * PI * v;
+
+        Vec3::new(phi.cos() * theta.sin(), theta.cos(), phi.sin() * theta.sin())
     }
 
     fn local_to_world(direction: Vec3f, lx: Vec3f, ly: Vec3f, lz: Vec3f) -> Vec3f {
