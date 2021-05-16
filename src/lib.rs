@@ -7,12 +7,12 @@ pub mod rtao;
 pub mod scene;
 pub mod shapes;
 pub mod vec3;
+pub(crate) mod sampling;
 
 #[cfg(test)]
 mod tests;
 
 use core::f32;
-use std::f32::consts::PI;
 use std::rc::Rc;
 use std::u32;
 
@@ -68,7 +68,7 @@ impl<'a> Raytracer<'a> {
                 BSDF::Lambert(lambert) => lambert.sample(rng),
             };
 
-            let direction = Raytracer::local_to_world(
+            let direction = sampling::local_to_world(
                 target_direction,
                 v2,
                 normal,
@@ -91,12 +91,14 @@ impl<'a> Raytracer<'a> {
         Vec3f::from(1.0) * throughput
     }
 
+    #[allow(dead_code)]
     fn reflect(vec: Vec3f, normal_of_point: Vec3f) -> Vec3f {
         vec * -1.0 + normal_of_point * vec.dot(normal_of_point) * 2.0
     }
 
     //ベクトルを生で考えずに横成分と縦成分に分割して考えてる
     //https://i.imgur.com/vD5gz5h.png
+    #[allow(dead_code)]
     fn refract(in_vec: Vec3f, normal_of_point: Vec3f, in_ior: f32, out_ior: f32) -> Option<Vec3f> {
         let cos1 = in_vec.dot(normal_of_point);
         let in_vech = in_vec - normal_of_point * cos1;
@@ -111,19 +113,6 @@ impl<'a> Raytracer<'a> {
         let out_vecp = normal_of_point * -cos2;
 
         Some(out_vech + out_vecp)
-    }
-
-    fn make_ray_direction_with_important_sampling(u: f32, v: f32) -> (Vec3f, f32) {
-        let theta = (1. / 2.) * (1. - 2. * u).clamp(-1.0, 1.0).acos();
-        let phi = 2.0 * PI * v;
-
-        let pdf: f32 = theta.cos() / PI;
-
-        (Vec3::new(phi.cos() * theta.sin(), theta.cos(), phi.sin() * theta.sin()), pdf)
-    }
-
-    fn local_to_world(direction: Vec3f, lx: Vec3f, ly: Vec3f, lz: Vec3f) -> Vec3f {
-        lx * direction.x + ly * direction.y + lz * direction.z
     }
 }
 

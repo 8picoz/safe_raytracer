@@ -1,4 +1,3 @@
-use crate::material::Material;
 use crate::vec3::Vec3f;
 
 use super::bsdf::BSDF;
