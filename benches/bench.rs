@@ -13,9 +13,10 @@ use rand::Rng;
 use rand::thread_rng;
 use raytracer::Raytracer;
 use raytracer::gamma;
-use raytracer::material::Material;
 use raytracer::pinhole_camera::PinholeCamera;
 use raytracer::scene::Scene;
+use raytracer::shapes::bsdf::BSDF;
+use raytracer::shapes::bsdf::lambert::Lambert;
 use raytracer::shapes::sphere::Sphere;
 use raytracer::shapes::triangle::Triangle;
 use raytracer::vec3::Color;
@@ -30,24 +31,23 @@ fn pathtrace() {
 
     let mut scene = Scene::new(Vec3::new(0.5, 1.0, 0.5).normalized());
 
-    scene.add_triangle(Triangle::new(Vec3::new(1.5, 0.1, 2.5), Vec3::new(1.5, 0.1, 3.5), Vec3::new(2.5, 0.1, 3.5), Material::Diffuce, Vec3::from(0.9)));
-    scene.add_triangle(Triangle::new(Vec3::new(1.5, 0.1, 2.5), Vec3::new(2.5, 0.1, 3.5), Vec3::new(2.5, 0.1, 2.5), Material::Diffuce, Vec3::from(0.9)));
-    scene.add_triangle(Triangle::new(Vec3::new(1.5, 0.1, 2.5), Vec3::new(1.5, -1.1, 2.5), Vec3::new(1.5, -1.1, 3.5), Material::Diffuce, Vec3::from(0.9)));
-    scene.add_triangle(Triangle::new(Vec3::new(1.5, 0.1, 2.5), Vec3::new(1.5, -1.1, 3.5), Vec3::new(1.5, 0.1, 2.5), Material::Diffuce, Vec3::from(0.9)));
-    scene.add_triangle(Triangle::new(Vec3::new(2.5, 0.1, 3.5), Vec3::new(2.5, -1.1, 3.5), Vec3::new(2.5, -1.1, 2.5), Material::Diffuce, Vec3::from(0.9)));
-    scene.add_triangle(Triangle::new(Vec3::new(2.5, 0.1, 3.5), Vec3::new(2.5, -1.1, 2.5), Vec3::new(2.5, 0.1, 2.5), Material::Diffuce, Vec3::from(0.9)));
-    scene.add_triangle(Triangle::new(Vec3::new(2.5, 0.1, 2.5), Vec3::new(2.5, -1.1, 2.5), Vec3::new(1.5, -1.1, 2.5), Material::Diffuce, Vec3::from(0.9)));
-    scene.add_triangle(Triangle::new(Vec3::new(2.5, 0.1, 2.5), Vec3::new(1.5, -1.1, 2.5), Vec3::new(1.5, 0.1, 2.5), Material::Diffuce, Vec3::from(0.9)));
-    scene.add_triangle(Triangle::new(Vec3::new(1.5, 0.1, 3.5), Vec3::new(1.5, -1.1, 3.5), Vec3::new(2.5, -1.1, 3.5), Material::Diffuce, Vec3::from(0.9)));
-    scene.add_triangle(Triangle::new(Vec3::new(1.5, 0.1, 3.5), Vec3::new(2.5, -1.1, 3.5), Vec3::new(2.5, 0.1, 3.5), Material::Diffuce, Vec3::from(0.9)));
-    scene.add_triangle(Triangle::new(Vec3::new(1.5, -1.1, 3.5), Vec3::new(1.5, -1.1, 2.5), Vec3::new(2.5, -1.1, 2.5), Material::Diffuce, Vec3::from(0.9)));
-    scene.add_triangle(Triangle::new(Vec3::new(1.5, -1.1, 3.5), Vec3::new(2.5, -1.1, 2.5), Vec3::new(2.5, -1.1, 3.5), Material::Diffuce, Vec3::from(0.9)));
+    scene.add_triangle(Triangle::new(Vec3::new(1.5, 0.1, 2.5), Vec3::new(1.5, 0.1, 3.5), Vec3::new(2.5, 0.1, 3.5), BSDF::Lambert(Lambert::new(Vec3::from(0.9)))));
+    scene.add_triangle(Triangle::new(Vec3::new(1.5, 0.1, 2.5), Vec3::new(2.5, 0.1, 3.5), Vec3::new(2.5, 0.1, 2.5), BSDF::Lambert(Lambert::new(Vec3::from(0.9)))));
+    scene.add_triangle(Triangle::new(Vec3::new(1.5, 0.1, 2.5), Vec3::new(1.5, -1.1, 2.5), Vec3::new(1.5, -1.1, 3.5), BSDF::Lambert(Lambert::new(Vec3::from(0.9)))));
+    scene.add_triangle(Triangle::new(Vec3::new(1.5, 0.1, 2.5), Vec3::new(1.5, -1.1, 3.5), Vec3::new(1.5, 0.1, 2.5), BSDF::Lambert(Lambert::new(Vec3::from(0.9)))));
+    scene.add_triangle(Triangle::new(Vec3::new(2.5, 0.1, 3.5), Vec3::new(2.5, -1.1, 3.5), Vec3::new(2.5, -1.1, 2.5), BSDF::Lambert(Lambert::new(Vec3::from(0.9)))));
+    scene.add_triangle(Triangle::new(Vec3::new(2.5, 0.1, 3.5), Vec3::new(2.5, -1.1, 2.5), Vec3::new(2.5, 0.1, 2.5), BSDF::Lambert(Lambert::new(Vec3::from(0.9)))));
+    scene.add_triangle(Triangle::new(Vec3::new(2.5, 0.1, 2.5), Vec3::new(2.5, -1.1, 2.5), Vec3::new(1.5, -1.1, 2.5), BSDF::Lambert(Lambert::new(Vec3::from(0.9)))));
+    scene.add_triangle(Triangle::new(Vec3::new(2.5, 0.1, 2.5), Vec3::new(1.5, -1.1, 2.5), Vec3::new(1.5, 0.1, 2.5), BSDF::Lambert(Lambert::new(Vec3::from(0.9)))));
+    scene.add_triangle(Triangle::new(Vec3::new(1.5, 0.1, 3.5), Vec3::new(1.5, -1.1, 3.5), Vec3::new(2.5, -1.1, 3.5), BSDF::Lambert(Lambert::new(Vec3::from(0.9)))));
+    scene.add_triangle(Triangle::new(Vec3::new(1.5, 0.1, 3.5), Vec3::new(2.5, -1.1, 3.5), Vec3::new(2.5, 0.1, 3.5), BSDF::Lambert(Lambert::new(Vec3::from(0.9)))));
+    scene.add_triangle(Triangle::new(Vec3::new(1.5, -1.1, 3.5), Vec3::new(1.5, -1.1, 2.5), Vec3::new(2.5, -1.1, 2.5), BSDF::Lambert(Lambert::new(Vec3::from(0.9)))));
+    scene.add_triangle(Triangle::new(Vec3::new(1.5, -1.1, 3.5), Vec3::new(2.5, -1.1, 2.5), Vec3::new(2.5, -1.1, 3.5), BSDF::Lambert(Lambert::new(Vec3::from(0.9)))));
  
     scene.add_sphere(Sphere::new(
         Vec3::new(0.0, -1001.0, 0.0),
         1000.0,
-        Material::Diffuce,
-        Vec3::new(0.9, 0.9, 0.9),
+        BSDF::Lambert(Lambert::new(Vec3::from(0.9)))
     ));
 
     let camera = Arc::new(PinholeCamera::new(
@@ -74,7 +74,7 @@ fn pathtrace() {
                                 / HEIGHT as f32;
 
                             let ray = camera.make_ray_to_pinhole(u, v);
-                            let raytracer = Raytracer::new(100, &scene, 0.9);
+                            let raytracer = Raytracer::new(100, &scene);
 
                             raytracer.pathtrace(ray, 0, 0.99, 100)
                         })

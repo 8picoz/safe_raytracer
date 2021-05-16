@@ -1,18 +1,16 @@
 use core::panic;
 use std::usize;
 
-use crate::material::Material;
 use crate::shapes::triangle::Triangle;
 use crate::vec3::Vec3;
 use crate::vec3::Vec3f;
 
 use super::Shapes;
+use super::bsdf::BSDF;
 
 #[derive(Debug)]
 pub struct Obj {
     pub center_position: Vec3f,
-    pub material: Material,
-    pub kd: Vec3f,
     pub triangles: Vec<Shapes>,
 }
 
@@ -21,7 +19,7 @@ const FAILED_TO_GET_FACE_INDICES: fn() -> &'static &'static u32 =
 const FAILED_TO_GET_MESH_POSTION: fn() -> &'static f32 = || panic!("Failed to get mesh position");
 
 impl Obj {
-    pub fn new(file_path: &str, center_position: Vec3f, material: Material, kd: Vec3f) -> Self {
+    pub fn new(file_path: &str, center_position: Vec3f, bsdf: BSDF) -> Self {
         let (models, _) =
             tobj::load_obj(file_path, false).unwrap_or_else(|_| panic!("Failed to load file"));
 
@@ -93,12 +91,12 @@ impl Obj {
                         .unwrap_or_else(FAILED_TO_GET_MESH_POSTION),
                 );
 
+                //NOTE: ここのbsdfをRcでどうにかする
                 let triangle = Shapes::Triangle(Triangle::new(
                     v0 + center_position,
                     v1 + center_position,
                     v2 + center_position,
-                    material,
-                    kd,
+                    bsdf.clone(),
                 ));
 
                 triangles.push(triangle);
@@ -108,9 +106,11 @@ impl Obj {
 
         Obj {
             center_position,
-            material,
-            kd,
             triangles,
         }
+    }
+
+    pub fn get_bsdf(&self) -> &BSDF {
+        self.triangles.get(0).unwrap().get_bsdf()
     }
 }

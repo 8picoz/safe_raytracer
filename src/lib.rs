@@ -16,111 +16,27 @@ use std::f32::consts::PI;
 use std::rc::Rc;
 use std::u32;
 
-use material::Material;
 use rand::prelude::ThreadRng;
 use rand::thread_rng;
 use rand::Rng;
 use ray::Ray;
-use rtao::RTAO;
 use scene::Scene;
+use shapes::bsdf::BSDF;
 use vec3::{Color, Vec3, Vec3f};
 
 pub struct Raytracer<'a> {
     max_depth: u32,
     scene: &'a Scene,
-    rho: f32,
 }
 
 impl<'a> Raytracer<'a> {
-    pub fn new(max_depth: u32, scene: &'a Scene, rho: f32) -> Self {
+    pub fn new(max_depth: u32, scene: &'a Scene) -> Self {
         Raytracer {
             max_depth,
             scene,
-            rho,
         }
     }
-
-    pub fn raytrace(&self, camera_ray: Ray, ao_sampling_point: u32, index: u32) -> Color {
-        if self.max_depth <= index {
-            return Vec3::new(0.0, 0.0, 0.0);
-        }
-
-        if let Some(info) = self.scene.collision_detect(&camera_ray) {
-            match info.target.get_material() {
-                Material::Mirror => {
-                    return self.raytrace(
-                        Ray::new(
-                            info.point,
-                            Raytracer::reflect(camera_ray.direction * -1.0, info.normal)
-                                .normalized(),
-                        ),
-                        ao_sampling_point,
-                        index + 1,
-                    );
-                }
-                Material::Glass => {
-                    let is_inside = (camera_ray.direction * -1.0).dot(info.normal) < 0.0;
-
-                    if !is_inside {
-                        //球体のガラスが内側からか外側からかで屈折率が変化する
-                        //他にも法線の向きが逆に
-                        if let Some(direction) =
-                            Raytracer::refract(camera_ray.direction * -1.0, info.normal, 1.0, 1.5)
-                        {
-                            return self.raytrace(
-                                Ray::new(info.point, direction.normalized()),
-                                ao_sampling_point,
-                                index + 1,
-                            );
-                        }
-
-                        return Vec3::new(0.0, 0.0, 0.0);
-                    }
-
-                    if let Some(direction) = Raytracer::refract(
-                        camera_ray.direction * -1.0,
-                        info.normal * -1.0,
-                        1.5,
-                        1.0,
-                    ) {
-                        return self.raytrace(
-                            Ray::new(info.point, direction.normalized()),
-                            ao_sampling_point,
-                            index + 1,
-                        );
-                    }
-
-                    return Vec3::new(0.0, 0.0, 0.0);
-                }
-                _ => (),
-            }
-
-            let directional_light_ray = Ray::new(info.point, self.scene.directional_light);
-            let ray_info = self.scene.collision_detect(&directional_light_ray);
-
-            let rtao = RTAO::new(100, 10.0, 1.0);
-
-            let kdao = info.target.get_kd() * 0.1 * (1.0 - rtao.rtao(self.scene, &info));
-
-            if let Some(ray_info) = ray_info {
-                if ray_info.target.get_material() == Material::Glass {
-                    return info.target.get_kd()
-                        * self.scene.directional_light.dot(info.normal).max(0.0)
-                        + kdao;
-                } else {
-                    return kdao;
-                }
-            } else {
-                return info.target.get_kd()
-                    * self.scene.directional_light.dot(info.normal).max(0.0)
-                    + kdao;
-            }
-        }
-
-        //空
-        Vec3::new(1.0, 1.0, 1.0)
-    }
-
+    
     pub fn pathtrace(&self, ray: Ray, index: u32, p: f32, sample: u32) -> Color {
         let mut result: Vec3f = Vec3f::from(0.0);
         let mut rng = thread_rng();
@@ -145,30 +61,23 @@ impl<'a> Raytracer<'a> {
     
         if let Some(info) = self.scene.collision_detect(&ray) {
             let normal = info.normal;
-            
+
             let (v2, v3) = normal.make_basis();
-            
+
+            let (bsdf, target_direction, pdf) = match info.target.get_bsdf() {
+                BSDF::Lambert(lambert) => lambert.sample(rng),
+            };
+
             let direction = Raytracer::local_to_world(
-                Raytracer::make_ray_direction_with_important_sampling(rng.gen_range(0.0..1.0), rng.gen_range(0.0..1.0)),
-                //Raytracer::make_ray_direction(rng.gen_range(0.0..1.0), rng.gen_range(0.0..1.0)),
+                target_direction,
                 v2,
                 normal,
                 v3,
             );
-            
-            //without important sampling
-            /*
-            let brdf = self.rho / PI;
+
             let cos = direction.dot(normal).max(0.0);
-            let pdf = 1. / (2. * PI);
-
-            let throughput = throughput * (brdf * cos / pdf);
-            */
-
-            //with important sampling
-            let brdf = self.rho;            
-
-            let throughput = throughput * brdf;
+            
+            let throughput = throughput * (bsdf * cos / pdf);
 
             return self.trace(
                 Rc::new(Ray::new(info.point, direction)),
@@ -204,19 +113,13 @@ impl<'a> Raytracer<'a> {
         Some(out_vech + out_vecp)
     }
 
-    #[allow(dead_code)]
-    fn make_ray_direction(u: f32, v: f32) -> Vec3f {
-        let theta = (1.0 - u).acos();
-        let phi = 2.0 * PI * v;
-
-        Vec3::new(phi.cos() * theta.sin(), theta.cos(), phi.sin() * theta.sin())
-    }
-
-    fn make_ray_direction_with_important_sampling(u: f32, v: f32) -> Vec3f {
+    fn make_ray_direction_with_important_sampling(u: f32, v: f32) -> (Vec3f, f32) {
         let theta = (1. / 2.) * (1. - 2. * u).clamp(-1.0, 1.0).acos();
         let phi = 2.0 * PI * v;
 
-        Vec3::new(phi.cos() * theta.sin(), theta.cos(), phi.sin() * theta.sin())
+        let pdf: f32 = theta.cos() / PI;
+
+        (Vec3::new(phi.cos() * theta.sin(), theta.cos(), phi.sin() * theta.sin()), pdf)
     }
 
     fn local_to_world(direction: Vec3f, lx: Vec3f, ly: Vec3f, lz: Vec3f) -> Vec3f {

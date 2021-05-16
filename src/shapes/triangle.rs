@@ -1,24 +1,24 @@
 use crate::material::Material;
 use crate::vec3::Vec3f;
 
+use super::bsdf::BSDF;
+
 #[derive(Debug)]
 pub struct Triangle {
     pub v0: Vec3f,
     pub v1: Vec3f,
     pub v2: Vec3f,
-    pub material: Material,
-    pub kd: Vec3f,
+    pub bsdf: BSDF,
     center_position: Option<Vec3f>,
 }
 
 impl Triangle {
-    pub fn new(v0: Vec3f, v1: Vec3f, v2: Vec3f, material: Material, kd: Vec3f) -> Self {
+    pub fn new(v0: Vec3f, v1: Vec3f, v2: Vec3f, bsdf: BSDF) -> Self {
         Triangle {
             v0,
             v1,
             v2,
-            material,
-            kd,
+            bsdf,
             center_position: None,
         }
     }

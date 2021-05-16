@@ -1,8 +1,8 @@
 use crate::intersect_info::IntersectInfo;
-use crate::material::Material;
 use crate::ray::{Ray, TMAX, TMIN};
-use crate::vec3::{Color, Vec3f};
+use crate::vec3::Vec3f;
 
+use self::bsdf::BSDF;
 use self::sphere::Sphere;
 pub mod sphere;
 
@@ -11,6 +11,8 @@ pub mod triangle;
 
 use self::obj::Obj;
 pub mod obj;
+
+pub mod bsdf;
 
 //できるだけ動的ディスパッチをしないようにするため
 #[derive(Debug)]
@@ -112,19 +114,11 @@ impl Shapes {
         }
     }
 
-    pub fn get_material(&self) -> Material {
+    pub fn get_bsdf(&self) -> &BSDF {
         match self {
-            Shapes::Sphere(sphere) => sphere.material,
-            Shapes::Triangle(triangle) => triangle.material,
-            Shapes::Obj(obj) => obj.material,
-        }
-    }
-
-    pub fn get_kd(&self) -> Color {
-        match self {
-            Shapes::Sphere(sphere) => sphere.kd,
-            Shapes::Triangle(triangle) => triangle.kd,
-            Shapes::Obj(obj) => obj.kd,
+            Shapes::Sphere(sphere) => &sphere.bsdf,
+            Shapes::Triangle(triangle) => &triangle.bsdf,
+            Shapes::Obj(obj) => obj.get_bsdf(),
         }
     }
 }
