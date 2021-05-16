@@ -8,6 +8,7 @@ pub mod scene;
 pub mod shapes;
 pub mod vec3;
 pub(crate) mod sampling;
+pub(crate) mod constant;
 
 #[cfg(test)]
 mod tests;
