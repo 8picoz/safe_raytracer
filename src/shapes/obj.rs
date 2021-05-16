@@ -21,7 +21,7 @@ const FAILED_TO_GET_MESH_POSTION: fn() -> &'static f32 = || panic!("Failed to ge
 impl Obj {
     pub fn new(file_path: &str, center_position: Vec3f, bsdf: BSDF) -> Self {
         let (models, _) =
-            tobj::load_obj(file_path, false).unwrap_or_else(|_| panic!("Failed to load file"));
+            tobj::load_obj(file_path, true).unwrap_or_else(|_| panic!("Failed to load file"));
 
         //AABB計算
 
