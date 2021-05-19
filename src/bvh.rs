@@ -6,16 +6,17 @@ use crate::shapes::triangle::Triangle;
 use crate::shapes::Shapes;
 use crate::vec3::Vec3f;
 
-pub struct Scene {
+#[allow(clippy::upper_case_acronyms)]
+pub struct BVH {
     //Shapesの実態の所有権はSceneが持つべき
     //IntersectInfoなどのライフタイムはSceneが消えたらそもそも存在できない
     shapes: Vec<Shapes>,
     pub directional_light: Vec3f,
 }
 
-impl Scene {
+impl BVH {
     pub fn new(directional_light: Vec3f) -> Self {
-        Scene {
+        BVH {
             shapes: Vec::new(),
             directional_light,
         }

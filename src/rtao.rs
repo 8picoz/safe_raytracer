@@ -3,7 +3,7 @@ use rand::Rng;
 
 use crate::intersect_info::IntersectInfo;
 use crate::ray::Ray;
-use crate::scene::Scene;
+use crate::bvh::BVH;
 use crate::vec3::{Vec3, Vec3f};
 
 #[allow(clippy::upper_case_acronyms)]
@@ -22,7 +22,7 @@ impl RTAO {
         }
     }
 
-    pub fn rtao(&self, scene: &Scene, info: &IntersectInfo) -> f32 {
+    pub fn rtao(&self, scene: &BVH, info: &IntersectInfo) -> f32 {
         let (v2, v3) = info.normal.make_basis();
 
         let mut rng = thread_rng();

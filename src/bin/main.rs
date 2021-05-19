@@ -8,7 +8,7 @@ use std::thread;
 
 use rand::{thread_rng, Rng};
 use raytracer::pinhole_camera::PinholeCamera;
-use raytracer::scene::Scene;
+use raytracer::bvh::BVH;
 use raytracer::shapes::bsdf::BSDF;
 use raytracer::shapes::bsdf::lambert::Lambert;
 use raytracer::shapes::obj::Obj;
@@ -22,7 +22,7 @@ fn main() {
 fn raytrace(width: u32, height: u32, path: &str, ssaa_sampling_point: u32, sample: u32) {
     let image = image::ImageBuffer::new(width, height);
 
-    let mut scene = Scene::new(Vec3::new(0.5, 1.0, 0.5).normalized());
+    let mut scene = BVH::new(Vec3::new(0.5, 1.0, 0.5).normalized());
     
     scene.add_obj(Obj::new(
         "./models/CornellBox-Mirror.obj",

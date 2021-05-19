@@ -14,7 +14,7 @@ use rand::thread_rng;
 use raytracer::Raytracer;
 use raytracer::gamma;
 use raytracer::pinhole_camera::PinholeCamera;
-use raytracer::scene::Scene;
+use raytracer::bvh::BVH;
 use raytracer::shapes::bsdf::BSDF;
 use raytracer::shapes::bsdf::lambert::Lambert;
 use raytracer::shapes::sphere::Sphere;
@@ -29,7 +29,7 @@ const SSAA_SAMPLING_POINT: u32 = 16;
 fn pathtrace() {
     let image = image::ImageBuffer::new(WIDTH, HEIGHT);
 
-    let mut scene = Scene::new(Vec3::new(0.5, 1.0, 0.5).normalized());
+    let mut scene = BVH::new(Vec3::new(0.5, 1.0, 0.5).normalized());
 
     scene.add_triangle(Triangle::new(Vec3::new(1.5, 0.1, 2.5), Vec3::new(1.5, 0.1, 3.5), Vec3::new(2.5, 0.1, 3.5), BSDF::Lambert(Lambert::new(Vec3::from(0.9)))));
     scene.add_triangle(Triangle::new(Vec3::new(1.5, 0.1, 2.5), Vec3::new(2.5, 0.1, 3.5), Vec3::new(2.5, 0.1, 2.5), BSDF::Lambert(Lambert::new(Vec3::from(0.9)))));
