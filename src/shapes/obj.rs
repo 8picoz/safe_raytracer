@@ -91,7 +91,7 @@ impl Obj {
                         .unwrap_or_else(FAILED_TO_GET_MESH_POSTION),
                 );
 
-                //NOTE: ここのbsdfをRcでどうにかする
+                //TODO: ここのbsdfをRcでどうにかする
                 let triangle = Shapes::Triangle(Triangle::new(
                     v0 + center_position,
                     v1 + center_position,

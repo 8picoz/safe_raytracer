@@ -11,13 +11,11 @@ use raytracer::pinhole_camera::PinholeCamera;
 use raytracer::scene::Scene;
 use raytracer::shapes::bsdf::BSDF;
 use raytracer::shapes::bsdf::lambert::Lambert;
-use raytracer::shapes::sphere::Sphere;
-use raytracer::shapes::triangle::Triangle;
+use raytracer::shapes::obj::Obj;
 use raytracer::vec3::{Color, Vec3};
 use raytracer::*;
 
 fn main() {
-    //raytrace_with_hard(512, 512, "output.png", 16, 100);
     raytrace(512, 512, "output.png", 16, 100);
 }
 
@@ -25,7 +23,14 @@ fn raytrace(width: u32, height: u32, path: &str, ssaa_sampling_point: u32, sampl
     let image = image::ImageBuffer::new(width, height);
 
     let mut scene = Scene::new(Vec3::new(0.5, 1.0, 0.5).normalized());
+    
+    scene.add_obj(Obj::new(
+        "./models/CornellBox-Mirror.obj",
+        Vec3::new(0.0, -1.0, 0.0),
+        BSDF::Lambert(Lambert::new(Vec3::from(0.9))),
+    ));
 
+/*   
     //立方体
     scene.add_triangle(Triangle::new(Vec3::new(1.5, 0.1, 2.5), Vec3::new(1.5, 0.1, 3.5), Vec3::new(2.5, 0.1, 3.5), BSDF::Lambert(Lambert::new(Vec3::from(0.9)))));
     scene.add_triangle(Triangle::new(Vec3::new(1.5, 0.1, 2.5), Vec3::new(2.5, 0.1, 3.5), Vec3::new(2.5, 0.1, 2.5), BSDF::Lambert(Lambert::new(Vec3::from(0.9)))));
@@ -39,14 +44,15 @@ fn raytrace(width: u32, height: u32, path: &str, ssaa_sampling_point: u32, sampl
     scene.add_triangle(Triangle::new(Vec3::new(1.5, 0.1, 3.5), Vec3::new(2.5, -1.1, 3.5), Vec3::new(2.5, 0.1, 3.5), BSDF::Lambert(Lambert::new(Vec3::from(0.9)))));
     scene.add_triangle(Triangle::new(Vec3::new(1.5, -1.1, 3.5), Vec3::new(1.5, -1.1, 2.5), Vec3::new(2.5, -1.1, 2.5), BSDF::Lambert(Lambert::new(Vec3::from(0.9)))));
     scene.add_triangle(Triangle::new(Vec3::new(1.5, -1.1, 3.5), Vec3::new(2.5, -1.1, 2.5), Vec3::new(2.5, -1.1, 3.5), BSDF::Lambert(Lambert::new(Vec3::from(0.9)))));
+*/
 
+/*
     scene.add_sphere(Sphere::new(
         Vec3::new(0.0, -1001.0, 0.0),
         1000.0,
         BSDF::Lambert(Lambert::new(Vec3::from(0.9)))
     ));
 
-/*     
     scene.add_sphere(Sphere::new(
         Vec3::new(-2.0, 0.0, 1.0),
         1.0,
@@ -65,8 +71,8 @@ fn raytrace(width: u32, height: u32, path: &str, ssaa_sampling_point: u32, sampl
 */
 
     let camera = Arc::new(PinholeCamera::new(
-        Vec3::new(4.0, 1.0, 7.0),
-        Vec3::from(0.0) - Vec3::new(4.0, 1.0, 7.0).normalized(),
+        Vec3::new(0.0, 0.0, 2.0),
+        Vec3::from(0.0) - Vec3::new(0.0, 0.0, 2.0).normalized(),
         1.0,
     ));
     let image = Arc::new(Mutex::new(image));
