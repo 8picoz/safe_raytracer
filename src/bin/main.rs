@@ -70,9 +70,11 @@ fn raytrace(width: u32, height: u32, path: &str, ssaa_sampling_point: u32, sampl
     ));
 */
 
+    let camera_pos = Vec3::new(0.0, 0.0, 3.0);
+
     let camera = Arc::new(PinholeCamera::new(
-        Vec3::new(0.0, 0.0, 2.0),
-        Vec3::from(0.0) - Vec3::new(0.0, 0.0, 2.0).normalized(),
+        camera_pos,
+        (Vec3::from(0.0) - camera_pos).normalized(),
         1.0,
     ));
     let image = Arc::new(Mutex::new(image));
