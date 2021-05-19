@@ -14,6 +14,8 @@ pub mod obj;
 
 pub mod bsdf;
 
+mod aabb;
+
 //できるだけ動的ディスパッチをしないようにするため
 #[derive(Debug)]
 pub enum Shapes {
