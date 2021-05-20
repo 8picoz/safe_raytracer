@@ -30,10 +30,9 @@ impl<'a, T> Iterator for Vec3Iterator<'a, T> where T: Copy + Send + Sync {
     type Item = &'a T;
 
     fn next(&mut self) -> Option<&'a T> {
-        match self.resource.get(self.curr as usize) {
-            Some(x) => Some(*x),
-            None => None,
-        }
+
+        self.resource.get(self.curr as usize).copied()
+
     }
 }
 
