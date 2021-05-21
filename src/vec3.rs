@@ -1,6 +1,5 @@
 use num::Float;
 use num::abs;
-use std::marker;
 use std::ops;
 use std::usize;
 

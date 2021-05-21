@@ -8,8 +8,8 @@ use crate::vec3::Vec3f;
 
 #[allow(clippy::upper_case_acronyms)]
 pub struct BVH {
-    //Shapesの実態の所有権はSceneが持つべき
-    //IntersectInfoなどのライフタイムはSceneが消えたらそもそも存在できない
+    //Shapesの実態の所有権はScene(BVH)が持つべき
+    //IntersectInfoなどのライフタイムはScene(BVH)が消えたらそもそも存在できない
     shapes: Vec<Shapes>,
     pub directional_light: Vec3f,
 }
