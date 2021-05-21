@@ -72,6 +72,27 @@ where
 
 impl<T> Vec3<T>
 where
+    T: Copy + Send + Sync + PartialOrd,
+{
+    pub fn cmp_each_max_value(&self, other: Vec3<T>) -> Self {
+        let max_x = if self.x > other.x { self.x } else { other.x };
+        let max_y = if self.y > other.y { self.y } else { other.y };
+        let max_z = if self.z > other.z { self.z } else { other.z };
+
+        Vec3::new(max_x, max_y, max_z)
+    }
+
+    pub fn cmp_each_min_value(&self, other: Vec3<T>) -> Self {
+        let min_x = if self.x < other.x { self.x } else { other.x };
+        let min_y = if self.y < other.y { self.y } else { other.y };
+        let min_z = if self.z < other.z { self.z } else { other.z };
+
+        Vec3::new(min_x, min_y, min_z)
+    }
+}
+
+impl<T> Vec3<T>
+where
     T: ops::Add<Output = T> + ops::Mul<Output = T> + Copy + Send + Sync,
 {
     //内積
