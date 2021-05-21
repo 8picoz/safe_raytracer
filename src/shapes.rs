@@ -2,6 +2,7 @@ use crate::intersect_info::IntersectInfo;
 use crate::ray::{Ray, TMAX, TMIN};
 use crate::vec3::Vec3f;
 
+use self::aabb::AABB;
 use self::bsdf::BSDF;
 use self::sphere::Sphere;
 pub mod sphere;
@@ -14,7 +15,7 @@ pub mod obj;
 
 pub mod bsdf;
 
-mod aabb;
+pub mod aabb;
 
 //できるだけ動的ディスパッチをしないようにするため
 #[derive(Debug)]
@@ -100,14 +101,11 @@ impl Shapes {
                 ))
             }
             Shapes::Obj(_) => {
-                //TODO: BVH
                 None
             }
         }
     }
 
-    // TODO: トレイトとしてまとめる
-    //SphereやReactangleに対してShapeのようなトレイトを用意
     pub fn get_center_position(&mut self) -> Vec3f {
         match self {
             Shapes::Sphere(sphere) => sphere.center_position,
@@ -121,6 +119,16 @@ impl Shapes {
             Shapes::Sphere(sphere) => &sphere.bsdf,
             Shapes::Triangle(triangle) => &triangle.bsdf,
             Shapes::Obj(obj) => obj.get_bsdf(),
+        }
+    }
+
+    //TODO: ObjをShape扱いするのをやめる
+    //primitiveとShapeを分けるべき?
+    pub fn calc_aabb(&self) -> AABB<f32> {
+        match self {
+            Shapes::Sphere(sphere) => sphere.calc_aabb(),
+            Shapes::Triangle(triangle) => triangle.calc_aabb(),
+            Shapes::Obj(_) => AABB::new_min_bound(),
         }
     }
 }

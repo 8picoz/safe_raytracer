@@ -38,7 +38,7 @@ impl Triangle {
         }
     }
 
-    pub fn calc_aabb(&self) -> AABB {
+    pub fn calc_aabb(&self) -> AABB<f32> {
         let vertices = [self.v0, self.v1, self.v2];
         let (x_max, x_min) = vertices.iter().map(|i| i.x).fold((f32::MAX, f32::MIN), |(m_max, m_min), v| (v.max(m_max), v.min(m_min)));
         let (y_max, y_min) = vertices.iter().map(|i| i.y).fold((f32::MAX, f32::MIN), |(m_max, m_min), v| (v.max(m_max), v.min(m_min)));

@@ -19,7 +19,7 @@ impl Sphere {
         }
     }
 
-    pub fn calc_aabb(&self) -> AABB {
+    pub fn calc_aabb(&self) -> AABB<f32> {
         //vec3のイテレーターにto_vec3を作りたい
         let max = Vec3f::new(self.center_position.x + self.radius, self.center_position.y + self.radius, self.center_position.z + self.radius);
         let min = Vec3f::new(self.center_position.x - self.radius, self.center_position.y - self.radius, self.center_position.z - self.radius);
