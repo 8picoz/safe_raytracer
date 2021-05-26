@@ -18,7 +18,7 @@ pub mod bsdf;
 pub mod aabb;
 
 //できるだけ動的ディスパッチをしないようにするため
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Shapes {
     Sphere(Sphere),
     Triangle(Triangle),

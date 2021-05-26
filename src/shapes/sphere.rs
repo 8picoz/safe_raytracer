@@ -3,7 +3,7 @@ use crate::vec3::Vec3f;
 use super::aabb::AABB;
 use super::bsdf::BSDF;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Sphere {
     pub center_position: Vec3f,
     pub radius: f32,

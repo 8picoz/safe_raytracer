@@ -4,7 +4,7 @@ use crate::vec3::Vec3f;
 use super::aabb::AABB;
 use super::bsdf::BSDF;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Triangle {
     pub v0: Vec3f,
     pub v1: Vec3f,
