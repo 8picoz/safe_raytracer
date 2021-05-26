@@ -68,6 +68,14 @@ where
 
         Vec3Iterator::new(resource, 0)
     }
+
+    pub fn get_axis_value(&self, axis: Axis) -> T {
+        match axis {
+            Axis::X => self.x,
+            Axis::Y => self.y,
+            Axis::Z => self.z,
+        }
+    }
 }
 
 impl<T> Vec3<T>
@@ -238,3 +246,8 @@ where
 pub type Vec3f = Vec3<f32>;
 pub type Color = Vec3<f32>;
 
+pub enum Axis {
+    X,
+    Y,
+    Z
+}

@@ -1,6 +1,7 @@
 use core::f32;
 
 use crate::vec3::Vec3;
+use crate::vec3::Axis;
 
 #[allow(clippy::upper_case_acronyms)]
 pub struct AABB<T: Copy + Send + Sync> {
@@ -43,5 +44,17 @@ impl AABB<f32> {
 
     pub fn center(&self) -> Vec3<f32> {
         (self.max * self.min) * 0.5
+    }
+
+    pub fn longest_axis(&self) -> Axis {
+        let length = self.max - self.min;
+
+        if length.x >= length.y && length.x >= length.z {
+            return Axis::X;
+        } else if length.y >= length.x && length.y >= length.z {
+            return Axis::Y;
+        }
+
+        Axis::Z
     }
 }
