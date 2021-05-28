@@ -246,6 +246,7 @@ where
 pub type Vec3f = Vec3<f32>;
 pub type Color = Vec3<f32>;
 
+#[derive(Clone, Copy)]
 pub enum Axis {
     X,
     Y,

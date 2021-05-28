@@ -70,6 +70,12 @@ fn raytrace(width: u32, height: u32, path: &str, ssaa_sampling_point: u32, sampl
     ));
 */
 
+    println!("start");
+
+    //TODO: build_bvhの呼び出す順番がユーザーに任されている
+    scene.build_bvh();
+    println!("end");
+
     let camera_pos = Vec3::new(0.0, 0.0, 3.0);
 
     let camera = Arc::new(PinholeCamera::new(
