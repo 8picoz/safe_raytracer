@@ -1,5 +1,5 @@
 use crate::intersect_info::IntersectInfo;
-use crate::ray::{Ray, TMAX, TMIN};
+use crate::ray::Ray;
 use crate::vec3::Vec3f;
 
 use self::aabb::AABB;
@@ -43,10 +43,10 @@ impl Shapes {
                 }
 
                 let mut ans = -b - D.sqrt();
-                if ans < TMIN || TMAX < ans {
+                if ans < ray.t_min || ray.t_max < ans {
                     ans = -b + D.sqrt();
 
-                    if ans < TMIN || TMAX < ans {
+                    if ans < ray.t_min || ray.t_max < ans {
                         return None;
                     }
                 }
@@ -87,7 +87,7 @@ impl Shapes {
                 }
 
                 let ans = e2.dot(beta) * inv_det;
-                if !(TMIN..=TMAX).contains(&ans) {
+                if !(ray.t_min..=ray.t_max).contains(&ans) {
                     return None;
                 }
 
