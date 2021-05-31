@@ -74,7 +74,7 @@ fn raytrace(width: u32, height: u32, path: &str, ssaa_sampling_point: u32, sampl
     scene.build_bvh();
     println!("nodes: {}, internal nodes: {}, leaf nodes: {}", scene.stats.n_nodes, scene.stats.n_internal_nodes, scene.stats.n_leaf_nodes);
 
-    let camera_pos = Vec3::new(0.0, 0.5, 3.0);
+    let camera_pos = Vec3::new(0.0, 0.0, 3.0);
 
     let camera = Arc::new(PinholeCamera::new(
         camera_pos,
