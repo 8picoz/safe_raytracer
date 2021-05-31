@@ -60,7 +60,10 @@ impl<'a> Raytracer<'a> {
 
         let throughput = throughput / p;
     
-        if let Some(info) = self.scene.collision_detect(&ray) {
+        let ret_info = self.scene.collision_detect(&ray).unwrap();
+
+        if let Some(info) = ret_info {
+            //println!("{:?}", info);
             let normal = info.normal;
 
             let (v2, v3) = normal.make_basis();

@@ -24,6 +24,6 @@ impl Sphere {
         let max = Vec3f::new(self.center_position.x + self.radius, self.center_position.y + self.radius, self.center_position.z + self.radius);
         let min = Vec3f::new(self.center_position.x - self.radius, self.center_position.y - self.radius, self.center_position.z - self.radius);
 
-        AABB::new(max, min)
+        AABB::new(min, max)
     }
 }

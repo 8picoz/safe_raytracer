@@ -28,8 +28,12 @@ pub enum Shapes {
 const K_EPSILON: f32 = 1e-8;
 
 impl Shapes {
-    //collisiotn_detectはそれぞれが持つべき(?)
     pub fn collision_detect(&self, ray: &Ray) -> Option<IntersectInfo> {
+        self.collision_detect_with_t_max(ray, ray.t_max)
+    }
+
+    //collisiotn_detectはそれぞれが持つべき(?)
+    pub fn collision_detect_with_t_max(&self, ray: &Ray, t_max: f32) -> Option<IntersectInfo> {
         match self {
             Shapes::Sphere(sphere) => {
                 let c_to_o = ray.origin - sphere.center_position;
@@ -43,10 +47,10 @@ impl Shapes {
                 }
 
                 let mut ans = -b - D.sqrt();
-                if ans < ray.t_min || ray.t_max < ans {
+                if ans < ray.t_min || t_max < ans {
                     ans = -b + D.sqrt();
 
-                    if ans < ray.t_min || ray.t_max < ans {
+                    if ans < ray.t_min || t_max < ans {
                         return None;
                     }
                 }
@@ -87,7 +91,7 @@ impl Shapes {
                 }
 
                 let ans = e2.dot(beta) * inv_det;
-                if !(ray.t_min..=ray.t_max).contains(&ans) {
+                if !(ray.t_min..=t_max).contains(&ans) {
                     return None;
                 }
 

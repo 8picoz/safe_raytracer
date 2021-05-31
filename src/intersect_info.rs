@@ -1,6 +1,7 @@
 use crate::shapes::Shapes;
 use crate::vec3::Vec3f;
 
+#[derive(Debug)]
 pub struct IntersectInfo<'a> {
     pub distance: f32,
     pub point: Vec3f,

@@ -38,7 +38,7 @@ impl RTAO {
                         v3,
                     ),
                 );
-                if let Some(ao_info) = scene.collision_detect(&ray) {
+                if let Some(ao_info) = scene.collision_detect(&ray).unwrap() {
                     if ao_info.distance < self.max_distance {
                         return 0.0;
                     }
