@@ -11,6 +11,7 @@ image = "0.23.13"
 num = "0.4.0"
 rand = "0.8.0"
 tobj = "2.0.4"
+floydrivest = "0.2.4"
 
 [dev-dependencies]
 criterion = "0.3.4"

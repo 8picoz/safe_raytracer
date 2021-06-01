@@ -233,6 +233,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e78d4f1cc4ae33bbfc157ed5d5a5ef3bc29227303d595861deb238fcec4e9457"
 
 [[package]]
+name = "floydrivest"
+version = "0.2.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7638b6426e81a0b730b7eb4ddac592b86e8118edff02107ffa452ba2cbd00e0a"
+
+[[package]]
 name = "getrandom"
 version = "0.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -621,6 +627,7 @@ name = "raytracer"
 version = "0.1.0"
 dependencies = [
  "criterion",
+ "floydrivest",
  "image",
  "num",
  "rand",
