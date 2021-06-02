@@ -11,16 +11,16 @@ use criterion::Criterion;
 
 use rand::Rng;
 use rand::thread_rng;
-use raytracer::Raytracer;
-use raytracer::gamma;
-use raytracer::pinhole_camera::PinholeCamera;
-use raytracer::bvh::BVH;
-use raytracer::shapes::bsdf::BSDF;
-use raytracer::shapes::bsdf::lambert::Lambert;
-use raytracer::shapes::sphere::Sphere;
-use raytracer::shapes::triangle::Triangle;
-use raytracer::vec3::Color;
-use raytracer::vec3::Vec3;
+use safe_raytracer::Raytracer;
+use safe_raytracer::gamma;
+use safe_raytracer::pinhole_camera::PinholeCamera;
+use safe_raytracer::bvh::BVH;
+use safe_raytracer::shapes::bsdf::BSDF;
+use safe_raytracer::shapes::bsdf::lambert::Lambert;
+use safe_raytracer::shapes::sphere::Sphere;
+use safe_raytracer::shapes::triangle::Triangle;
+use safe_raytracer::vec3::Color;
+use safe_raytracer::vec3::Vec3;
 
 const WIDTH: u32 = 512;
 const HEIGHT: u32 = 512;

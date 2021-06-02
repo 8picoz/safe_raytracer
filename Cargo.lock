@@ -617,17 +617,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "raytracer"
-version = "0.1.0"
-dependencies = [
- "criterion",
- "image",
- "num",
- "rand",
- "tobj",
-]
-
-[[package]]
 name = "regex"
 version = "1.5.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -665,6 +654,17 @@ name = "ryu"
 version = "1.0.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "71d301d4193d031abdd79ff7e3dd721168a9572ef3fe51a1517aba235bd8f86e"
+
+[[package]]
+name = "safe_raytracer"
+version = "0.1.0"
+dependencies = [
+ "criterion",
+ "image",
+ "num",
+ "rand",
+ "tobj",
+]
 
 [[package]]
 name = "same-file"

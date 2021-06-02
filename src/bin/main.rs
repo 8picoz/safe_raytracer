@@ -7,14 +7,14 @@ use std::sync::{Arc, Mutex};
 use std::thread;
 
 use rand::{thread_rng, Rng};
-use raytracer::pinhole_camera::PinholeCamera;
-use raytracer::bvh::BVH;
-use raytracer::shapes::bsdf::BSDF;
-use raytracer::shapes::bsdf::lambert::Lambert;
-use raytracer::shapes::obj::Obj;
-use raytracer::shapes::sphere::Sphere;
-use raytracer::vec3::{Color, Vec3};
-use raytracer::*;
+
+use safe_raytracer::pinhole_camera::PinholeCamera;
+use safe_raytracer::bvh::BVH;
+use safe_raytracer::shapes::bsdf::BSDF;
+use safe_raytracer::shapes::bsdf::lambert::Lambert;
+use safe_raytracer::shapes::obj::Obj;
+use safe_raytracer::vec3::{Color, Vec3};
+use safe_raytracer::*;
 
 fn main() {
     raytrace(512, 512, "output.png", 16, 10);
