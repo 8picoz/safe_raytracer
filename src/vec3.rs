@@ -1,6 +1,7 @@
 use num::Float;
 use num::abs;
 use std::ops;
+use std::usize;
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Vec3<T>
@@ -10,6 +11,28 @@ where
     pub x: T,
     pub y: T,
     pub z: T,
+}
+
+pub struct Vec3Iterator<'a, T> where T: Copy + Send + Sync {
+    resource: [&'a T; 3],
+    curr: u32,
+    //_marker: marker::PhantomData<&'a T>,
+}
+
+impl<'a, T> Vec3Iterator<'a, T> where T: Copy + Send + Sync {
+    pub fn new(resource: [&'a T; 3], curr: u32) -> Self {
+        Self { resource, curr }
+    }
+}
+
+impl<'a, T> Iterator for Vec3Iterator<'a, T> where T: Copy + Send + Sync {
+    type Item = &'a T;
+
+    fn next(&mut self) -> Option<&'a T> {
+
+        self.resource.get(self.curr as usize).copied()
+
+    }
 }
 
 impl From<f32> for Vec3<f32> {
@@ -38,6 +61,41 @@ where
 {
     pub fn new(x: T, y: T, z: T) -> Self {
         Vec3 { x, y, z }
+    }
+
+    pub fn iter(&self) -> Vec3Iterator<T> {
+        let resource = [&self.x, &self.y, &self.z];
+
+        Vec3Iterator::new(resource, 0)
+    }
+
+    pub fn get_axis_value(&self, axis: Axis) -> T {
+        match axis {
+            Axis::X => self.x,
+            Axis::Y => self.y,
+            Axis::Z => self.z,
+        }
+    }
+}
+
+impl<T> Vec3<T>
+where
+    T: Copy + Send + Sync + PartialOrd,
+{
+    pub fn cmp_each_max_value(&self, other: Self) -> Self {
+        let max_x = if self.x > other.x { self.x } else { other.x };
+        let max_y = if self.y > other.y { self.y } else { other.y };
+        let max_z = if self.z > other.z { self.z } else { other.z };
+
+        Vec3::new(max_x, max_y, max_z)
+    }
+
+    pub fn cmp_each_min_value(&self, other: Self) -> Self {
+        let min_x = if self.x < other.x { self.x } else { other.x };
+        let min_y = if self.y < other.y { self.y } else { other.y };
+        let min_z = if self.z < other.z { self.z } else { other.z };
+
+        Vec3::new(min_x, min_y, min_z)
     }
 }
 
@@ -184,6 +242,13 @@ where
         }
     }
 }
-
+ 
 pub type Vec3f = Vec3<f32>;
 pub type Color = Vec3<f32>;
+
+#[derive(Clone, Copy)]
+pub enum Axis {
+    X,
+    Y,
+    Z
+}

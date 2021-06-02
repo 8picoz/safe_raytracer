@@ -7,8 +7,9 @@ use std::sync::{Arc, Mutex};
 use std::thread;
 
 use rand::{thread_rng, Rng};
+
 use safe_raytracer::pinhole_camera::PinholeCamera;
-use safe_raytracer::scene::Scene;
+use safe_raytracer::bvh::BVH;
 use safe_raytracer::shapes::bsdf::BSDF;
 use safe_raytracer::shapes::bsdf::lambert::Lambert;
 use safe_raytracer::shapes::obj::Obj;
@@ -16,21 +17,22 @@ use safe_raytracer::vec3::{Color, Vec3};
 use safe_raytracer::*;
 
 fn main() {
-    raytrace(512, 512, "output.png", 16, 100);
+    raytrace(512, 512, "output.png", 16, 10);
 }
 
 fn raytrace(width: u32, height: u32, path: &str, ssaa_sampling_point: u32, sample: u32) {
     let image = image::ImageBuffer::new(width, height);
 
-    let mut scene = Scene::new(Vec3::new(0.5, 1.0, 0.5).normalized());
+    let mut scene = BVH::new(Vec3::new(0.5, 1.0, 0.5).normalized());
     
+
     scene.add_obj(Obj::new(
-        "./models/CornellBox-Mirror.obj",
+        "./models/cornellbox/CornellBox-Mirror.obj",
         Vec3::new(0.0, -1.0, 0.0),
         BSDF::Lambert(Lambert::new(Vec3::from(0.9))),
     ));
 
-/*   
+/* 
     //立方体
     scene.add_triangle(Triangle::new(Vec3::new(1.5, 0.1, 2.5), Vec3::new(1.5, 0.1, 3.5), Vec3::new(2.5, 0.1, 3.5), BSDF::Lambert(Lambert::new(Vec3::from(0.9)))));
     scene.add_triangle(Triangle::new(Vec3::new(1.5, 0.1, 2.5), Vec3::new(2.5, 0.1, 3.5), Vec3::new(2.5, 0.1, 2.5), BSDF::Lambert(Lambert::new(Vec3::from(0.9)))));
@@ -44,9 +46,10 @@ fn raytrace(width: u32, height: u32, path: &str, ssaa_sampling_point: u32, sampl
     scene.add_triangle(Triangle::new(Vec3::new(1.5, 0.1, 3.5), Vec3::new(2.5, -1.1, 3.5), Vec3::new(2.5, 0.1, 3.5), BSDF::Lambert(Lambert::new(Vec3::from(0.9)))));
     scene.add_triangle(Triangle::new(Vec3::new(1.5, -1.1, 3.5), Vec3::new(1.5, -1.1, 2.5), Vec3::new(2.5, -1.1, 2.5), BSDF::Lambert(Lambert::new(Vec3::from(0.9)))));
     scene.add_triangle(Triangle::new(Vec3::new(1.5, -1.1, 3.5), Vec3::new(2.5, -1.1, 2.5), Vec3::new(2.5, -1.1, 3.5), BSDF::Lambert(Lambert::new(Vec3::from(0.9)))));
-*/
 
+*/
 /*
+
     scene.add_sphere(Sphere::new(
         Vec3::new(0.0, -1001.0, 0.0),
         1000.0,
@@ -69,6 +72,10 @@ fn raytrace(width: u32, height: u32, path: &str, ssaa_sampling_point: u32, sampl
         BSDF::Lambert(Lambert::new(Vec3::new(0.2, 0.2, 0.8)))
     ));
 */
+
+    //TODO: build_bvhの呼び出す順番がユーザーに任されている
+    scene.build_bvh();
+    println!("nodes: {}, internal nodes: {}, leaf nodes: {}", scene.stats.n_nodes, scene.stats.n_internal_nodes, scene.stats.n_leaf_nodes);
 
     let camera_pos = Vec3::new(0.0, 0.0, 3.0);
 

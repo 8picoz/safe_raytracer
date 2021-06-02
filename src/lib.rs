@@ -4,7 +4,7 @@ pub mod material;
 pub mod pinhole_camera;
 pub mod ray;
 pub mod rtao;
-pub mod scene;
+pub mod bvh;
 pub mod shapes;
 pub mod vec3;
 pub(crate) mod sampling;
@@ -21,17 +21,17 @@ use rand::prelude::ThreadRng;
 use rand::thread_rng;
 use rand::Rng;
 use ray::Ray;
-use scene::Scene;
+use bvh::BVH;
 use shapes::bsdf::BSDF;
 use vec3::{Color, Vec3, Vec3f};
 
 pub struct Raytracer<'a> {
     max_depth: u32,
-    scene: &'a Scene,
+    scene: &'a BVH,
 }
 
 impl<'a> Raytracer<'a> {
-    pub fn new(max_depth: u32, scene: &'a Scene) -> Self {
+    pub fn new(max_depth: u32, scene: &'a BVH) -> Self {
         Raytracer {
             max_depth,
             scene,
@@ -60,7 +60,9 @@ impl<'a> Raytracer<'a> {
 
         let throughput = throughput / p;
     
-        if let Some(info) = self.scene.collision_detect(&ray) {
+        let ret_info = self.scene.collision_detect(&ray).unwrap();
+
+        if let Some(info) = ret_info {
             let normal = info.normal;
 
             let (v2, v3) = normal.make_basis();

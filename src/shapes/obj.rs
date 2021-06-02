@@ -8,7 +8,7 @@ use crate::vec3::Vec3f;
 use super::Shapes;
 use super::bsdf::BSDF;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Obj {
     pub center_position: Vec3f,
     pub triangles: Vec<Shapes>,

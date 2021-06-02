@@ -11,16 +11,16 @@ use criterion::Criterion;
 
 use rand::Rng;
 use rand::thread_rng;
-use raytracer::Raytracer;
-use raytracer::gamma;
-use raytracer::pinhole_camera::PinholeCamera;
-use raytracer::scene::Scene;
-use raytracer::shapes::bsdf::BSDF;
-use raytracer::shapes::bsdf::lambert::Lambert;
-use raytracer::shapes::sphere::Sphere;
-use raytracer::shapes::triangle::Triangle;
-use raytracer::vec3::Color;
-use raytracer::vec3::Vec3;
+use safe_raytracer::Raytracer;
+use safe_raytracer::gamma;
+use safe_raytracer::pinhole_camera::PinholeCamera;
+use safe_raytracer::bvh::BVH;
+use safe_raytracer::shapes::bsdf::BSDF;
+use safe_raytracer::shapes::bsdf::lambert::Lambert;
+use safe_raytracer::shapes::sphere::Sphere;
+use safe_raytracer::shapes::triangle::Triangle;
+use safe_raytracer::vec3::Color;
+use safe_raytracer::vec3::Vec3;
 
 const WIDTH: u32 = 512;
 const HEIGHT: u32 = 512;
@@ -29,7 +29,7 @@ const SSAA_SAMPLING_POINT: u32 = 16;
 fn pathtrace() {
     let image = image::ImageBuffer::new(WIDTH, HEIGHT);
 
-    let mut scene = Scene::new(Vec3::new(0.5, 1.0, 0.5).normalized());
+    let mut scene = BVH::new(Vec3::new(0.5, 1.0, 0.5).normalized());
 
     scene.add_triangle(Triangle::new(Vec3::new(1.5, 0.1, 2.5), Vec3::new(1.5, 0.1, 3.5), Vec3::new(2.5, 0.1, 3.5), BSDF::Lambert(Lambert::new(Vec3::from(0.9)))));
     scene.add_triangle(Triangle::new(Vec3::new(1.5, 0.1, 2.5), Vec3::new(2.5, 0.1, 3.5), Vec3::new(2.5, 0.1, 2.5), BSDF::Lambert(Lambert::new(Vec3::from(0.9)))));

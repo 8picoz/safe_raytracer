@@ -1,7 +1,8 @@
 use crate::intersect_info::IntersectInfo;
-use crate::ray::{Ray, TMAX, TMIN};
+use crate::ray::Ray;
 use crate::vec3::Vec3f;
 
+use self::aabb::AABB;
 use self::bsdf::BSDF;
 use self::sphere::Sphere;
 pub mod sphere;
@@ -14,8 +15,10 @@ pub mod obj;
 
 pub mod bsdf;
 
+pub mod aabb;
+
 //できるだけ動的ディスパッチをしないようにするため
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Shapes {
     Sphere(Sphere),
     Triangle(Triangle),
@@ -25,8 +28,12 @@ pub enum Shapes {
 const K_EPSILON: f32 = 1e-8;
 
 impl Shapes {
-    //collisiotn_detectはそれぞれが持つべき(?)
     pub fn collision_detect(&self, ray: &Ray) -> Option<IntersectInfo> {
+        self.collision_detect_with_t_max(ray, ray.t_max)
+    }
+
+    //collisiotn_detectはそれぞれが持つべき(?)
+    pub fn collision_detect_with_t_max(&self, ray: &Ray, t_max: f32) -> Option<IntersectInfo> {
         match self {
             Shapes::Sphere(sphere) => {
                 let c_to_o = ray.origin - sphere.center_position;
@@ -40,10 +47,10 @@ impl Shapes {
                 }
 
                 let mut ans = -b - D.sqrt();
-                if ans < TMIN || TMAX < ans {
+                if ans < ray.t_min || t_max < ans {
                     ans = -b + D.sqrt();
 
-                    if ans < TMIN || TMAX < ans {
+                    if ans < ray.t_min || t_max < ans {
                         return None;
                     }
                 }
@@ -84,7 +91,7 @@ impl Shapes {
                 }
 
                 let ans = e2.dot(beta) * inv_det;
-                if !(TMIN..=TMAX).contains(&ans) {
+                if !(ray.t_min..=t_max).contains(&ans) {
                     return None;
                 }
 
@@ -98,14 +105,11 @@ impl Shapes {
                 ))
             }
             Shapes::Obj(_) => {
-                //TODO: BVH
                 None
             }
         }
     }
 
-    // TODO: トレイトとしてまとめる
-    //SphereやReactangleに対してShapeのようなトレイトを用意
     pub fn get_center_position(&mut self) -> Vec3f {
         match self {
             Shapes::Sphere(sphere) => sphere.center_position,
@@ -119,6 +123,16 @@ impl Shapes {
             Shapes::Sphere(sphere) => &sphere.bsdf,
             Shapes::Triangle(triangle) => &triangle.bsdf,
             Shapes::Obj(obj) => obj.get_bsdf(),
+        }
+    }
+
+    //TODO: ObjをShape扱いするのをやめる
+    //primitiveとShapeを分けるべき?
+    pub fn calc_aabb(&self) -> AABB<f32> {
+        match self {
+            Shapes::Sphere(sphere) => sphere.calc_aabb(),
+            Shapes::Triangle(triangle) => triangle.calc_aabb(),
+            Shapes::Obj(_) => AABB::new_zero_bound(),
         }
     }
 }
