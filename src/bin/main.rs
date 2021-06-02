@@ -4,7 +4,7 @@ extern crate tobj;
 use core::f32;
 use std::io::{stdout, Write};
 use std::sync::{Arc, Mutex};
-use std::thread;
+use std::{env, thread};
 
 use rand::{thread_rng, Rng};
 
@@ -17,7 +17,11 @@ use safe_raytracer::vec3::{Color, Vec3};
 use safe_raytracer::*;
 
 fn main() {
-    raytrace(512, 512, "output.png", 16, 10);
+    let arg: Vec<String> = env::args().collect();
+
+    let output_path = if let Some(path) = arg.get(1) { path } else { "output.png" };
+
+    raytrace(512, 512, output_path, 16, 10);
 }
 
 fn raytrace(width: u32, height: u32, path: &str, ssaa_sampling_point: u32, sample: u32) {
