@@ -132,7 +132,7 @@ impl Shapes {
         match self {
             Shapes::Sphere(sphere) => sphere.calc_aabb(),
             Shapes::Triangle(triangle) => triangle.calc_aabb(),
-            Shapes::Obj(_) => AABB::new_min_bound(),
+            Shapes::Obj(_) => AABB::new_zero_bound(),
         }
     }
 }

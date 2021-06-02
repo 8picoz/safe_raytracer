@@ -26,7 +26,7 @@ impl AABB<f32> {
         Self { min, max }
     }
     
-    pub fn new_min_bound() -> Self {
+    pub fn new_zero_bound() -> Self {
         let zero = Vec3::from(0.0);
 
         Self { min: zero, max: zero }
@@ -47,7 +47,7 @@ impl AABB<f32> {
     }
 
     pub fn center(&self) -> Vec3<f32> {
-        (self.max * self.min) * 0.5
+        (self.min + self.max) * 0.5
     }
 
     pub fn longest_axis(&self) -> Axis {
@@ -62,17 +62,13 @@ impl AABB<f32> {
         Axis::Z
     }
 
-    pub fn collision_detect_without_info(&self, ray: &Ray, dir_inv: Vec3f, dir_inv_sign: Vec3<usize>) -> bool {
-        self.collision_detect_without_info_with_t_max(ray, dir_inv, dir_inv_sign, ray.t_max)
-    }
+    pub fn intersect(&self, ray: &Ray, dir_inv: Vec3f, dir_inv_sign: Vec3<usize>) -> bool {
 
-    pub fn collision_detect_without_info_with_t_max(&self, ray: &Ray, dir_inv: Vec3f, dir_inv_sign: Vec3<usize>, ray_t_max: f32) -> bool {
         let mut t_min = (self.get_bounds_idx(dir_inv_sign.x).x - ray.origin.x) * dir_inv.x;
         let mut t_max = (self.get_bounds_idx(1 - dir_inv_sign.x).x - ray.origin.x) * dir_inv.x;
         let t_y_min = (self.get_bounds_idx(dir_inv_sign.y).y - ray.origin.y) * dir_inv.y;
         let t_y_max = (self.get_bounds_idx(1 - dir_inv_sign.y).y - ray.origin.y) * dir_inv.y;
         if t_min > t_y_max || t_y_min > t_max {
-            //println!("{} > {} || {} > {}", t_min, t_y_max, t_y_min, t_max);
             return false;
         }
         if t_y_min > t_min {
@@ -94,7 +90,7 @@ impl AABB<f32> {
             t_max = t_z_max;
         }
         
-        t_min < ray_t_max && t_max > ray.t_min
+        t_min < ray.t_max && t_max > ray.t_min
     }
 
     fn get_bounds_idx(&self, value: usize) -> Vec3f {

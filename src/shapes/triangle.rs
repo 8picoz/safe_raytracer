@@ -44,8 +44,8 @@ impl Triangle {
         let (y_max, y_min) = vertices.iter().map(|i| i.y).fold((f32::MIN, f32::MAX), |(m_max, m_min), v| (v.max(m_max), v.min(m_min)));
         let (z_max, z_min) = vertices.iter().map(|i| i.z).fold((f32::MIN, f32::MAX), |(m_max, m_min), v| (v.max(m_max), v.min(m_min)));
 
-        let max = Vec3::new(x_max, y_max, z_max);
         let min = Vec3::new(x_min, y_min, z_min);
+        let max = Vec3::new(x_max, y_max, z_max);
 
         AABB::new(min, max)
     }

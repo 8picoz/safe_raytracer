@@ -58,10 +58,11 @@ impl BVH {
 
         let bvh_root_node = match &self.bvh_root_node {
             Some(node) => node,
-            None => return Err("you have to make a root node"),
+            None => return Err("you have to make a root node before call this method"),
         };
 
-        Ok(self.intersect_node(bvh_root_node, ray, dir_inv, dir_inv_sign))
+        let mut t_max = ray.t_max;
+        Ok(self.intersect_node(bvh_root_node, ray, dir_inv, dir_inv_sign, &mut t_max))
     }
 
     pub fn build_bvh(&mut self) {
@@ -75,19 +76,21 @@ impl BVH {
 
         let shapes = &mut self.shapes[shapes_range.clone()];
 
-        let bbox = shapes.iter().fold(AABB::new_min_bound(), |acc, i| acc.merge_aabb(i.calc_aabb()));
+        let bbox = shapes.iter().fold(AABB::new(Vec3::from(f32::MAX), Vec3::from(f32::MIN)), |acc, i| acc.merge_aabb(i.calc_aabb()));
 
         let shapes_len = shapes.len();
         if shapes_len <= LEAF_THRESHOLD {
             return self.create_leaf_node(bbox, shapes_range);
         }
 
-        let split_axis = shapes.iter().fold(AABB::new_min_bound(), |acc, i| acc.merge_point(i.calc_aabb().center())).longest_axis();
-        
+        let split_axis = shapes.iter().fold(AABB::new(Vec3::from(f32::MAX), Vec3::from(f32::MIN)), |acc, i| acc.merge_point(i.calc_aabb().center())).longest_axis();
+
         shapes.sort_by(|a, b| a.calc_aabb().center().get_axis_value(split_axis).partial_cmp(&b.calc_aabb().center().get_axis_value(split_axis)).unwrap() );
         
         let split_idx = shapes_len / 2;
+
         if split_idx == 0 || split_idx == shapes_len {
+            println!("splitting failed");
             return self.create_leaf_node(bbox, shapes_range);
         }
 
@@ -114,17 +117,15 @@ impl BVH {
         }
     }
 
-    fn intersect_node(&self, node: &BVHNode, ray: &Ray, dir_inv: Vec3<f32>, dir_inv_sign: Vec3<usize>) -> Option<IntersectInfo> {
-        let mut ret_info = None;
-        let mut t_max = ray.t_max;
+    fn intersect_node(&self, node: &BVHNode, ray: &Ray, dir_inv: Vec3<f32>, dir_inv_sign: Vec3<usize>, t_max: &mut f32) -> Option<IntersectInfo> {
         
-        if node.aabb.collision_detect_without_info_with_t_max(ray, dir_inv, dir_inv_sign, t_max) {
+        if node.aabb.intersect(ray, dir_inv, dir_inv_sign) {
+            let mut ret_info = None;
             if node.children[0].is_none() && node.children[1].is_none() {
                 //現在のノードが葉ノード
                 for shape in &self.shapes[node.shapes_range.clone()] {
-                    if let Some(info) = shape.collision_detect_with_t_max(ray, t_max) {
-                        //println!("intersect");
-                        t_max = info.distance;
+                    if let Some(info) = shape.collision_detect_with_t_max(ray, *t_max) {
+                        *t_max = info.distance;
                         ret_info = Some(info);
                     }
                 }
@@ -139,29 +140,27 @@ impl BVH {
 
                 ret_info = match &node.children[child_idx] {
                     Some(child) => {
-                        self.intersect_node(child, ray, dir_inv, dir_inv_sign)
+                        self.intersect_node(child, ray, dir_inv, dir_inv_sign, t_max)
                     }
                     None => {
                         panic!("There can't use leaf node here but It's leaf node");
                     }
                 };
 
-                let info_2 = match &node.children[1 - child_idx] {
+                ret_info = if let Some(info) = match &node.children[1 - child_idx] {
                     Some(child) => {
-                        self.intersect_node(child, ray, dir_inv, dir_inv_sign)
+                        self.intersect_node(child, ray, dir_inv, dir_inv_sign, t_max)
                     }
                     None => {
                         panic!("There can't use leaf node here but It's leaf node");
                     }
-                };
-
-                if info_2.is_some() {
-                    ret_info = info_2;
-                }
+                } { Some(info) } else { ret_info };
             }
+
+            return ret_info;
         }
 
-        ret_info
+        None
     }
 }
 
