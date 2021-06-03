@@ -10,7 +10,7 @@ use crate::shapes::obj::Obj;
 use crate::shapes::sphere::Sphere;
 use crate::shapes::triangle::Triangle;
 use crate::shapes::Shapes;
-use crate::vec3::Axis;
+use crate::vec3::axis::*;
 use crate::vec3::Vec3;
 use crate::vec3::Vec3f;
 

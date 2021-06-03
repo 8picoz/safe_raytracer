@@ -3,7 +3,7 @@ use std::usize;
 
 use crate::ray::Ray;
 use crate::vec3::Vec3;
-use crate::vec3::Axis;
+use crate::vec3::axis::*;
 use crate::vec3::Vec3f;
 
 #[allow(clippy::upper_case_acronyms)]
