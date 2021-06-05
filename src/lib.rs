@@ -7,6 +7,7 @@ pub mod rtao;
 pub mod bvh;
 pub mod shapes;
 pub mod vec3;
+pub mod encoder;
 pub(crate) mod sampling;
 pub(crate) mod constant;
 
