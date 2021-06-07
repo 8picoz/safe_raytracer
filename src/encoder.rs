@@ -1,65 +1,72 @@
+use core::str;
 use std::error::Error;
-use std::io::Write;
+use std::fs::File;
+use std::io::BufWriter;
+use std::io::{self, Write};
 use std::path::Path;
 use std::process::Command;
 use std::process::Stdio;
 
-use image::DynamicImage;
-use image::GenericImageView;
-
+use image::ImageBuffer;
+use image::Rgb;
 pub struct Encoder<P: AsRef<Path>> {
     output_path: P,
-    ffmpeg: std::process::Child,
+    output_temp_path: &'static str,
     width: u32,
     height: u32,
     framerate: u32,
+    writer: BufWriter<File>,
 }
 
 impl<P: AsRef<Path>> Encoder<P> {
     pub fn new(output_path: P, width: u32, height: u32, framerate: u32) -> Result<Encoder<P>, Box<dyn Error>> {
+        let output_temp_path = "./temp";
 
-        let command = |width, height, framerate, output_path| {
-            format!(
-                "ffmpeg -framerate {framerate} -f rawvideo -pix_fmt rgba -s {width}x{height} -i - -pix_fmt yuv420p -vcodec h264_nvenc -movflags faststart {output_path:?}",
-                width=width, height=height, framerate=framerate, output_path=output_path
-            )
-        };
 
-        let ffmpeg = if cfg!(target_os = "windows") {
-            Command::new("cmd")
-        } else {
-            Command::new("sh")
-        }.args(&["-c", &command(width, height, framerate, output_path.as_ref())])
-        .stdin(Stdio::piped())
-        .spawn()?;
+        let writer = BufWriter::new(File::create(output_temp_path)?);
 
         Ok(Encoder {
             output_path,
-            ffmpeg,
+            output_temp_path,
             width,
             height,
             framerate,
+            writer,
         })
     }
 
-    pub fn encode(&mut self, frame: &DynamicImage) -> Result<(), Box<dyn Error>> {
+    pub fn write(&mut self, frame: &ImageBuffer<Rgb<u8>, Vec<u8>>) -> Result<(), Box<dyn Error>> {
         let (width, height) = frame.dimensions();
 
         if (width, height) != (self.width, self.height) {
             Err(Box::<dyn Error>::from(std::io::Error::new(std::io::ErrorKind::Other, "Invalid image size")))
         } else {
-            let stdin = match self.ffmpeg.stdin.as_mut() {
-                Some(stdin) => Ok(stdin),
-                None => Err(Box::<dyn Error>::from(std::io::Error::new(std::io::ErrorKind::Other, "Cannot start ffmpeg"))),
-            }?;
-
-            stdin.write_all(&frame.to_rgb8().as_raw())?;
+            self.writer.write_all(frame.as_raw())?;
             Ok(())
         }
     }
 
-    pub fn wait(mut self) -> Result<(), Box<dyn Error>> {
-        self.ffmpeg.wait()?;
+    pub fn encode(&mut self) -> Result<(), Box<dyn Error>> {
+
+        let command = |width, height, framerate, output_temp_path, output_path| {
+            format!(
+                "ffmpeg -framerate {framerate} -f rawvideo -pix_fmt rgba -s {width}x{height} -i {output_temp_path} -pix_fmt yuv420p -vcodec libx264 -movflags faststart {output_path:?}",
+                width=width, height=height, framerate=framerate, output_temp_path=output_temp_path, output_path=output_path
+            )
+        };
+
+        let mut ffmpeg = if cfg!(target_os = "windows") {
+            Command::new("cmd")
+        } else {
+            Command::new("sh")
+        }.args(&["-c", &command(self.width, self.height, self.framerate, self.output_temp_path, self.output_path.as_ref())])
+        .stdin(Stdio::piped())
+        .spawn()?;
+
+        drop(ffmpeg.stdin.take());
+        drop(ffmpeg.stdout.take());
+        ffmpeg.wait()?;
+
         Ok(())
     }
 }
