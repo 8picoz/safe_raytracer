@@ -35,18 +35,18 @@ impl<P: AsRef<Path>> Encoder<P> {
         })
     }
 
-    pub fn write(&mut self, frame: &ImageBuffer<Rgb<u8>, Vec<u8>>) -> Result<(), Box<dyn Error>> {
+    pub fn write(&mut self, frame: &ImageBuffer<Rgb<u8>, Vec<u8>>) -> Result<(), std::io::Error> {
         let (width, height) = frame.dimensions();
 
         if (width, height) != (self.width, self.height) {
-            Err(Box::<dyn Error>::from(std::io::Error::new(std::io::ErrorKind::Other, "Invalid image size")))
+            Err(std::io::Error::new(std::io::ErrorKind::Other, "Invalid image size"))
         } else {
             self.writer.write_all(frame.as_raw())?;
             Ok(())
         }
     }
 
-    pub fn encode(&mut self) -> Result<(), Box<dyn Error>> {
+    pub fn encode(&mut self) -> Result<(), std::io::Error> {
 
         let command = |width, height, framerate, output_temp_path, output_path| {
             format!(
