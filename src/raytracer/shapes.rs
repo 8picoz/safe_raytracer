@@ -1,5 +1,5 @@
-use crate::intersect_info::IntersectInfo;
-use crate::ray::Ray;
+use crate::raytracer::intersect_info::IntersectInfo;
+use crate::raytracer::ray::Ray;
 use crate::vec3::Vec3f;
 
 use self::aabb::AABB;

@@ -1,9 +1,9 @@
 use rand::thread_rng;
 use rand::Rng;
 
-use crate::intersect_info::IntersectInfo;
-use crate::ray::Ray;
-use crate::bvh::BVH;
+use crate::raytracer::intersect_info::IntersectInfo;
+use crate::raytracer::ray::Ray;
+use crate::raytracer::bvh::BVH;
 use crate::vec3::{Vec3, Vec3f};
 
 #[allow(clippy::upper_case_acronyms)]

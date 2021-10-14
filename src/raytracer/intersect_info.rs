@@ -1,4 +1,4 @@
-use crate::shapes::Shapes;
+use crate::raytracer::shapes::Shapes;
 use crate::vec3::Vec3f;
 
 #[derive(Debug)]

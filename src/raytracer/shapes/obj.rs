@@ -1,12 +1,12 @@
 use core::panic;
 use std::usize;
 
-use crate::shapes::triangle::Triangle;
+use crate::raytracer::shapes::triangle::Triangle;
 use crate::vec3::Vec3;
 use crate::vec3::Vec3f;
 
 use super::Shapes;
-use super::bsdf::BSDF;
+use crate::raytracer::shapes::bsdf::BSDF;
 
 #[derive(Debug, Clone)]
 pub struct Obj {
