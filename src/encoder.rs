@@ -42,6 +42,7 @@ impl<P: AsRef<Path>> Encoder<P> {
             Err(std::io::Error::new(std::io::ErrorKind::Other, "Invalid image size"))
         } else {
             self.writer.write_all(frame.as_raw())?;
+            self.writer.flush()?;
             Ok(())
         }
     }
