@@ -1,4 +1,4 @@
-use crate::raytracer::ray::Ray;
+use crate::renderer::raytracer::ray::Ray;
 use crate::vec3::Vec3f;
 
 pub struct PinholeCamera {
