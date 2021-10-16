@@ -3,6 +3,7 @@ pub mod material;
 pub mod renderer;
 pub mod pinhole_camera;
 pub mod vec3;
+pub mod matrix;
 pub(crate) mod constant;
 
 #[cfg(test)]
