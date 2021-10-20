@@ -72,6 +72,19 @@ where
     }
 }
 
+
+impl<T> ops::Mul for Matrix2x2<T>
+where
+    T: Bound<T>,
+{
+    type Output = Self;
+
+    fn mul(self, other: Self) -> Self {
+        Matrix2x2::new(self.x0y0 * other.x0y0 + self.x1y0 * other.x0y1, self.x0y0 * other.x1y0 + self.x1y0 * other.x1y1,
+                        self.x0y1 * other.x0y0 + self.x1y1 * other.x0y1, self.x0y1 * other.x1y0 + self.x1y1 * other.x1y1)
+    }
+}
+
 impl<T> Matrix3x3<T> 
 where
     T: Bound<T>,
@@ -93,6 +106,19 @@ where
         Matrix3x3::new(self.x0y0 + other.x0y0, self.x1y0 + other.x1y0, self.x2y0 + other.x2y0,
                         self.x0y1 + other.x0y1, self.x1y1 + other.x1y1, self.x2y1 + other.x2y1,
                         self.x0y2 + other.x0y2, self.x1y2 + other.x1y2, self.x2y2 + other.x2y2)
+    }
+}
+
+impl<T> ops::Mul for Matrix3x3<T>
+where
+    T: Bound<T>,
+{
+    type Output = Self;
+
+    fn mul(self, other: Self) -> Self {
+        Matrix3x3::new(self.x0y0 * other.x0y0 + self.x1y0 * other.x0y1 + self.x2y0 * other.x0y2, self.x0y0 * other.x1y0 + self.x1y0 * other.x1y1 + self.x2y0 * other.x1y2, self.x0y0 * other.x2y0 + self.x1y0 * other.x2y1 + self.x2y0 * other.x2y2, 
+                        self.x0y1 * other.x0y0 + self.x1y1 * other.x0y1 + self.x2y1 * other.x0y2, self.x0y1 * other.x1y0 + self.x1y1 * other.x1y1 + self.x2y1 * other.x1y2, self.x0y1 * other.x2y0 + self.x1y1 * other.x2y1 + self.x2y1 * other.x2y2, 
+                        self.x0y2 * other.x0y0 + self.x1y2 * other.x0y1 + self.x2y2 * other.x0y2, self.x0y2 * other.x1y0 + self.x1y2 * other.x1y1 + self.x2y2 * other.x1y2, self.x0y2 * other.x2y0 + self.x1y2 * other.x2y1 + self.x2y2 * other.x2y2)
     }
 }
 
@@ -119,4 +145,18 @@ where
                         self.x0y2 + other.x0y2, self.x1y2 + other.x1y2, self.x2y2 + other.x2y2, self.x3y2 + other.x3y2,
                         self.x0y3 + other.x0y3, self.x1y3 + other.x1y3, self.x2y3 + other.x2y3, self.x3y3 + other.x3y3)
     }
+}
+
+impl<T> ops::Mul for Matrix4x4<T>
+where
+    T: Bound<T>
+{
+    type Output = Self;
+
+    fn mul(self, other: Self) -> Self {
+        Matrix4x4::new(self.x0y0 * other.x0y0 + self.x1y0 * other.x0y1 + self.x2y0 * other.x0y2 + self.x3y0 * other.x0y3, self.x0y0 * other.x1y0 + self.x1y0 * other.x1y1 + self.x2y0 * other.x1y2 + self.x3y0 * other.x1y3, self.x0y0 * other.x2y0 + self.x1y0 * other.x2y1 + self.x2y0 * other.x2y2 + self.x3y0 * other.x2y3, self.x0y0 * other.x3y0 + self.x1y0 * other.x3y1 + self.x2y0 * other.x3y2 + self.x3y0 * other.x3y3,
+                        self.x0y1 * other.x0y0 + self.x1y1 * other.x0y1 + self.x2y1 * other.x0y2 + self.x3y1 * other.x0y3, self.x0y1 * other.x1y0 + self.x1y1 * other.x1y1 + self.x2y1 * other.x1y2 + self.x3y1 * other.x1y3, self.x0y1 * other.x2y0 + self.x1y1 * other.x2y1 + self.x2y1 * other.x2y2 + self.x3y1 * other.x2y3, self.x0y1 * other.x3y0 + self.x1y1 * other.x3y1 + self.x2y1 * other.x3y2 + self.x3y1 * other.x3y3, 
+                        self.x0y2 * other.x0y0 + self.x1y2 * other.x0y1 + self.x2y2 * other.x0y2 + self.x3y2 * other.x0y3, self.x0y2 * other.x1y0 + self.x1y2 * other.x1y1 + self.x2y2 * other.x1y2 + self.x3y2 * other.x1y3, self.x0y2 * other.x2y0 + self.x1y2 * other.x2y1 + self.x2y2 * other.x2y2 + self.x3y2 * other.x2y3, self.x0y2 * other.x3y0 + self.x1y2 * other.x3y1 + self.x2y2 * other.x3y2 + self.x3y2 * other.x3y3, 
+                        self.x0y3 * other.x0y0 + self.x1y3 * other.x0y1 + self.x2y3 * other.x0y2 + self.x3y3 * other.x0y3, self.x0y3 * other.x1y0 + self.x1y3 * other.x1y1 + self.x2y3 * other.x1y3 + self.x3y3 * other.x1y3, self.x0y3 * other.x2y0 + self.x1y3 * other.x2y1 + self.x2y3 * other.x2y2 + self.x3y3 * other.x2y3, self.x0y3 * other.x3y0 + self.x1y3 * other.x3y1 + self.x2y3 * other.x3y2 + self.x3y3 * other.x3y3)
+        }
 }
