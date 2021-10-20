@@ -4,7 +4,7 @@ use std::f32::consts::PI;
 use rand::Rng;
 use rand::prelude::ThreadRng;
 
-use crate::sampling;
+use crate::renderer::raytracer::sampling;
 use crate::vec3::Vec3f;
 
 #[derive(Debug, Clone)]
