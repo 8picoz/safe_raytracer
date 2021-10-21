@@ -1,7 +1,7 @@
 [package]
 name = "safe_raytracer"
 version = "0.1.0"
-authors = ["たた <pf35301@gmail.com>"]
+authors = ["たた <8picoz@tata.pw>"]
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -10,7 +10,7 @@ edition = "2018"
 image = "0.23.13"
 num = "0.4.0"
 rand = "0.8.0"
-tobj = "2.0.4"
+tobj = "3.2.0"
 
 [dev-dependencies]
 criterion = "0.3.4"
