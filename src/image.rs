@@ -43,7 +43,7 @@ impl Image {
         let mut writer = BufWriter::new(f);
 
         writer.write_all(b"P3\r\n")?;
-        writer.write_all(&format!("{} {}\r\n", self.width, self.height).as_bytes())?;
+        writer.write_all(format!("{} {}\r\n", self.width, self.height).as_bytes())?;
         writer.write_all(b"255\r\n")?;
 
         for j in 0..self.height {
@@ -53,9 +53,9 @@ impl Image {
                 let g = clamp(self.canvas[index + 1] * 255.0, 0.0, 255.0) as usize;
                 let b = clamp(self.canvas[index + 2] * 255.0, 0.0, 255.0) as usize;
 
-                writer.write_all(&format!("{} ", r).as_bytes())?;
-                writer.write_all(&format!("{} ", g).as_bytes())?;
-                writer.write_all(&format!("{}\r\n", b).as_bytes())?;
+                writer.write_all(format!("{} ", r).as_bytes())?;
+                writer.write_all(format!("{} ", g).as_bytes())?;
+                writer.write_all(format!("{}\r\n", b).as_bytes())?;
             }
         }
 

@@ -9,10 +9,10 @@ use std::{env, thread};
 use rand::{thread_rng, Rng};
 
 use safe_raytracer::pinhole_camera::PinholeCamera;
-use safe_raytracer::bvh::BVH;
-use safe_raytracer::shapes::bsdf::BSDF;
-use safe_raytracer::shapes::bsdf::lambert::Lambert;
-use safe_raytracer::shapes::obj::Obj;
+use safe_raytracer::renderer::raytracer::bvh::BVH;
+use safe_raytracer::renderer::raytracer::shapes::bsdf::BSDF;
+use safe_raytracer::renderer::raytracer::shapes::bsdf::lambert::Lambert;
+use safe_raytracer::renderer::raytracer::shapes::obj::Obj;
 use safe_raytracer::vec3::{Color, Vec3};
 use safe_raytracer::*;
 

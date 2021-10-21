@@ -1,13 +1,9 @@
 pub mod image;
-pub mod intersect_info;
 pub mod material;
+pub mod renderer;
 pub mod pinhole_camera;
-pub mod ray;
-pub mod rtao;
-pub mod bvh;
-pub mod shapes;
 pub mod vec3;
-pub(crate) mod sampling;
+pub mod matrix;
 pub(crate) mod constant;
 
 #[cfg(test)]
@@ -20,9 +16,9 @@ use std::u32;
 use rand::prelude::ThreadRng;
 use rand::thread_rng;
 use rand::Rng;
-use ray::Ray;
-use bvh::BVH;
-use shapes::bsdf::BSDF;
+use renderer::raytracer::ray::Ray;
+use renderer::raytracer::bvh::BVH;
+use renderer::raytracer::shapes::bsdf::BSDF;
 use vec3::{Color, Vec3, Vec3f};
 
 pub struct Raytracer<'a> {
@@ -71,7 +67,7 @@ impl<'a> Raytracer<'a> {
                 BSDF::Lambert(lambert) => lambert.sample(rng),
             };
 
-            let direction = sampling::local_to_world(
+            let direction = renderer::raytracer::sampling::local_to_world(
                 target_direction,
                 v2,
                 normal,

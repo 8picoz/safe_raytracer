@@ -14,11 +14,11 @@ use rand::thread_rng;
 use safe_raytracer::Raytracer;
 use safe_raytracer::gamma;
 use safe_raytracer::pinhole_camera::PinholeCamera;
-use safe_raytracer::bvh::BVH;
-use safe_raytracer::shapes::bsdf::BSDF;
-use safe_raytracer::shapes::bsdf::lambert::Lambert;
-use safe_raytracer::shapes::sphere::Sphere;
-use safe_raytracer::shapes::triangle::Triangle;
+use safe_raytracer::renderer::raytracer::bvh::BVH;
+use safe_raytracer::renderer::raytracer::shapes::bsdf::BSDF;
+use safe_raytracer::renderer::raytracer::shapes::bsdf::lambert::Lambert;
+use safe_raytracer::renderer::raytracer::shapes::sphere::Sphere;
+use safe_raytracer::renderer::raytracer::shapes::triangle::Triangle;
 use safe_raytracer::vec3::Color;
 use safe_raytracer::vec3::Vec3;
 
