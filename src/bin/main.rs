@@ -107,7 +107,7 @@ fn raytrace(width: u32, height: u32, path: &str, ssaa_sampling_point: u32, sampl
                                 / height as f32;
 
                             let ray = camera.make_ray_to_pinhole(u, v);
-                            let raytracer = Raytracer::new(100, &scene);
+                            let raytracer = renderer::raytracer::Raytracer::new(100, &scene);
 
                             raytracer.pathtrace(ray, 0, 0.99, sample)
                         })
