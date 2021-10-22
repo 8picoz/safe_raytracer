@@ -11,7 +11,7 @@ use criterion::Criterion;
 
 use rand::Rng;
 use rand::thread_rng;
-use safe_raytracer::Raytracer;
+use safe_raytracer::renderer::raytracer::Raytracer;
 use safe_raytracer::gamma;
 use safe_raytracer::pinhole_camera::PinholeCamera;
 use safe_raytracer::renderer::raytracer::bvh::BVH;
